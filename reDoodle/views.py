@@ -1,21 +1,17 @@
 # coding: utf-8
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-import datetime
+from .models import Chain
 
 
-def hello(request):
-    return HttpResponse('Hello world')
-
-
-def current_datetime(request):
-    now = datetime.datetime.now()
-    html = '<h1>%s.</h1>' % now
-    return HttpResponse(html)
+def index(request):
+    chainsInDefaultRoom = Chain.objects.filter(room__name='default')
+    return render_to_response('reDoodle.html', {'chainsInDefaultRoom': chainsInDefaultRoom})
 
 
 def room(request, room):
-    return render_to_response('room.html', {'room': room})
+    chainInRoom = Chain.objects.filter(room__name=room)
+    return render_to_response('room.html', {'room': room, 'chainInRoom': chainInRoom})
 
 
 def chain(request, room, chain):

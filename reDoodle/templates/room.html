@@ -3,5 +3,12 @@
 {% block titile %}{{ room }}{% endblock %}
 
 {% block content %}
-<h1>Добро пожаловать в комнату {{ room }}</h1>
+    <h1>Добро пожаловать в комнату {{ room }}</h1>
+    {% if chainInRoom %}
+    <ul class="unstyled">
+        {% for chain in chainInRoom %}
+            <li>{{ chain.name }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 {% endblock %}
