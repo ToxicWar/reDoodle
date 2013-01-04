@@ -1,5 +1,5 @@
 # coding: utf-8
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from .models import Chain
 
@@ -14,6 +14,5 @@ def room(request, room):
     return render_to_response('room.html', {'room': room, 'chainInRoom': chainInRoom})
 
 
-def chain(request, room, chain):
-    html = '<h1>Room: %s,</h1><h2> Chain: %s</h2>' % (room, chain)
-    return HttpResponse(html)
+def editor(request, room, chain):
+    return render_to_response('editor.html', {'room': room, 'chain': chain})
