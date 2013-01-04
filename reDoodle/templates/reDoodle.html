@@ -1,11 +1,12 @@
-{% extends "includes/base.html" %}
+{% extends "includes/baseHTML5.html" %}
 
 {% block title %}reDoodle{% endblock %}
 
-{% block content %}
-    <ul class="unstyled">
-        {% for chain in chainsInDefaultRoom %}
-            <li>{{ chain.name }}</li>
-        {% endfor %}
-    </ul>
+{% block section %}
+    {% for chain in chainsInDefaultRoom %}
+        <article>
+            <header>{{ chain.name }}</header>
+            <p></p>
+        </article>    
+    {% endfor %}
 {% endblock %}

@@ -1,16 +1,17 @@
-{% extends "includes/base.html" %}
+{% extends "includes/baseHTML5.html" %}
 
 {% block title %}{{ room }}{% endblock %}
 
-{% block navigation %}/ {{ room }}{% endblock %}
+{% block nav %}<a href="/">reDoodle</a> &rarr; {{ room }}{% endblock %}
 
-{% block content %}
+{% block section %}
     <h1>Добро пожаловать в комнату {{ room }}</h1>
     {% if chainInRoom %}
-    <ul class="unstyled">
         {% for chain in chainInRoom %}
-            <li>{{ chain.name }}</li>
+            <article>
+                <header><a href="{% url editor room chain.name %}">{{ chain.name }}</a></header>
+                <p></p>
+            </article>    
         {% endfor %}
-    </ul>
     {% endif %}
 {% endblock %}
