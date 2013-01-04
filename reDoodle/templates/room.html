@@ -2,14 +2,14 @@
 
 {% block title %}{{ room }}{% endblock %}
 
-{% block nav %}<a href="/">reDoodle</a> &rarr; {{ room }}{% endblock %}
+{% block nav %}<a href="/">reDoodle</a> &rarr; <span>{{ room }}</span>{% endblock %}
 
 {% block section %}
     <h1>Добро пожаловать в комнату {{ room }}</h1>
     {% if chainInRoom %}
         {% for chain in chainInRoom %}
             <article>
-                <header><a href="{% url editor room chain.name %}">{{ chain.name }}</a></header>
+                <header><h2><a href="{% url editor room chain.name %}">{{ chain.name }}</a></h2></header>
                 <p></p>
             </article>    
         {% endfor %}

@@ -4,6 +4,7 @@
 <head>
     <meta charset=utf-8>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/reDoodle-debug.css' %}">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     {% block style_and_script %}{% endblock %}
 </head>
@@ -12,7 +13,7 @@
         {% block header %}{% endblock %}
     </header>
     <nav>
-        {% block nav %}reDoodle {% endblock %}
+        {% block nav %}<span>reDoodle</span> {% endblock %}
     </nav>
     <aside>
         {% block aside %}{% endblock %}
