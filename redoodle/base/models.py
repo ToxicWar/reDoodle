@@ -16,7 +16,7 @@ class Room(models.Model):
 class Chain(models.Model):
     name = models.CharField('Name', max_length=255, default='')
     likes = models.PositiveIntegerField('Likes', default=0)
-    # isBlocked = models.BooleanField('IsBlocked', default=True)
+    isBlocked = models.BooleanField('IsBlocked', default=True)
     ban = []
     room = models.ForeignKey(Room)
 

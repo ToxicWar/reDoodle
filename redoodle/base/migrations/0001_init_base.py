@@ -9,43 +9,45 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding model 'Room'
-        db.create_table('reDoodle_room', (
+        db.create_table('base_room', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(default='', max_length=255)),
         ))
-        db.send_create_signal('reDoodle', ['Room'])
+        db.send_create_signal('base', ['Room'])
 
         # Adding model 'Chain'
-        db.create_table('reDoodle_chain', (
+        db.create_table('base_chain', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(default='', max_length=255)),
             ('likes', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('room', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['reDoodle.Room'])),
+            ('isBlocked', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('room', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['base.Room'])),
         ))
-        db.send_create_signal('reDoodle', ['Chain'])
+        db.send_create_signal('base', ['Chain'])
 
 
     def backwards(self, orm):
         # Deleting model 'Room'
-        db.delete_table('reDoodle_room')
+        db.delete_table('base_room')
 
         # Deleting model 'Chain'
-        db.delete_table('reDoodle_chain')
+        db.delete_table('base_chain')
 
 
     models = {
-        'reDoodle.chain': {
+        'base.chain': {
             'Meta': {'object_name': 'Chain'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'isBlocked': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'likes': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255'}),
-            'room': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['reDoodle.Room']"})
+            'room': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['base.Room']"})
         },
-        'reDoodle.room': {
+        'base.room': {
             'Meta': {'object_name': 'Room'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255'})
         }
     }
 
-    complete_apps = ['reDoodle']
+    complete_apps = ['base']
