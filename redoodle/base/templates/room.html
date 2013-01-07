@@ -4,6 +4,14 @@
 
 {% block nav %}<a href="/">reDoodle</a> &rarr; <span>{{ room }}</span>{% endblock %}
 
+{% block aside %}
+    <form action="{% url add_chain %}" method="POST">{% csrf_token %}
+        <input type="hidden" name="room_name" id="id_room_name" value="{{ room }}"/>
+        {{ form.as_p }}
+        <input type="submit" /> 
+    </form>
+{% endblock %}
+
 {% block section %}
     <h1>Добро пожаловать в комнату {{ room }}</h1>
     {% if chainInRoom %}
