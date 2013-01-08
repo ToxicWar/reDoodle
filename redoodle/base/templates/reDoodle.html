@@ -3,8 +3,13 @@
 {% block title %}reDoodle{% endblock %}
 
 {% block aside %}
-    <form action="{% url add_room %}" method="POST">{% csrf_token %}
-        {{ form.as_p }}
+    <form action="{% url add_room %}" method="POST">
+        {% csrf_token %}
+        <div class="field">
+            {{ form.room_name.errors }}
+            <label for="id_room_name">Room name:</label>
+            {{ form.room_name }}
+        </div>
         <input type="submit" /> 
     </form>
 {% endblock %}

@@ -5,9 +5,14 @@
 {% block nav %}<a href="/">reDoodle</a> &rarr; <span>{{ room }}</span>{% endblock %}
 
 {% block aside %}
-    <form action="{% url add_chain %}" method="POST">{% csrf_token %}
+    <form action="{% url add_chain %}" method="POST">
+        {% csrf_token %}
         <input type="hidden" name="room_name" id="id_room_name" value="{{ room }}"/>
-        {{ form.as_p }}
+        <div class="field">
+            {{ form.chain_name.errors }}
+            <label for="id_chain_name">Chain name:</label>
+            {{ form.chain_name }}
+        </div>
         <input type="submit" /> 
     </form>
 {% endblock %}
