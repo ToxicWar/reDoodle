@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{% static 'css/farbtastic.css' %}">
     <link rel="stylesheet" href="{% static 'css/palette.css' %}">
 
+    <script src="{% static 'js/utils.js' %}"></script>
+
     <script src="{% static 'js/graphics-editor/util.js' %}"></script>
     <script src="{% static 'js/graphics-editor/paint.js' %}"></script>
     <script src="{% static 'js/graphics-editor/history.js' %}"></script>
@@ -139,7 +141,7 @@
             rc = canvas.getContext("2d");
             paint=new Paint(canvas);
             imgTransf=new ImageTransformer(paint.layer[0],
-            "http://cs405524.userapi.com/v405524078/4286/qeBfEZLcafE.jpg",
+            "{% static 'room/'%}{{ room }}/{{ chain }}/{{ image_name }}.png",
             function() {paint.refresh();});
 
 
@@ -201,6 +203,6 @@
         <div id="picker"></div>
         <div id="buttons"></div>
         <button>Magic button</button>
-        <button type="submit" >Send it...</button>
+        <button onclick="send_image(canvas, '{{ room }}', '{{ chain }}', '{% url save_image %}')">Send it...</button>
     </div>
 {% endblock %}
