@@ -14,7 +14,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function send_image (canvas, room, chain, url) {
+function send_image(canvas, room, chain, url) {
     var base64 = canvas.toDataURL();
     //var csrftoken = getCookie('csrftoken');
     $.ajax({
@@ -32,6 +32,25 @@ function send_image (canvas, room, chain, url) {
             },
             fail: function(data) {
                 alert(data);
+            }
+        });
+}
+
+function like(url, chain, like) {
+    like_class = '.'+chain+'_like_count'
+    $.ajax({
+            type: "GET",
+            url: url,
+            data: {'chain': chain, 'like': like},
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            async: true,
+            cache: false,
+            success: function(data) {
+                $(like_class).html(data)
+            },
+            fail: function(data) {
+                alert('Fail.');
             }
         });
 }

@@ -25,7 +25,15 @@ def room(request, room, form=None):
 
 
 def editor(request, room, chain):
-    image_name = len(os.listdir(PATH_ROOMS + room + '/' + chain + '/'))-1
+    try:
+        image_name = len(os.listdir(PATH_ROOMS + room + '/' + chain + '/')) - 1
+    except OSError:
+        try:
+            os.mkdir(PATH_ROOMS + room)
+        except:
+            pass
+        os.mkdir(PATH_ROOMS + room + '/' + chain)
+        image_name = len(os.listdir(PATH_ROOMS + room + '/' + chain + '/')) - 1
     return direct_to_template(request, 'editor.html', {'room': room, 'chain': chain, 'image_name': image_name})
 
 
@@ -82,6 +90,24 @@ def save_image(request):
             print 'close file'
         else:
             message = 'Fail save image.'
+    else:
+        return HttpResponse(status=403)
+    return HttpResponse(message)
+
+
+def like(request):
+    if request.is_ajax():
+        if request.method == 'GET':
+            chain_name = request.GET['chain']
+            like = request.GET['like']
+            print 'AJAX request ' + chain_name + ' ' + str(like)
+            chain = Chain.objects.get(name=chain_name)
+            if like == 'True':
+                chain.like()
+            else:
+                chain.dislike()
+            chain.save()
+            message = chain.likes
     else:
         return HttpResponse(status=403)
     return HttpResponse(message)

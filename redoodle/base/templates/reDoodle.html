@@ -1,12 +1,33 @@
 {% extends "includes/baseHTML5.html" %}
 
+{% load static %}
+{% block style_and_script %}
+    <script src="{% static 'js/utils.js' %}"></script>
+{% endblock %}
+
 {% block title %}reDoodle{% endblock %}
+
+{% block aside %}
+    <form action="{% url add_room %}" method="POST">
+        {% csrf_token %}
+        <div class="field">
+            {{ form.room_name.errors }}
+            <label for="id_room_name">Room name:</label>
+            {{ form.room_name }}
+        </div>
+        <input type="submit" /> 
+    </form>
+{% endblock %}
 
 {% block section %}
     {% for chain in chainsInDefaultRoom %}
         <article>
-            <header><h2>{{ chain.name }}{{ some_var }}</h2></header>
-            <p></p>
+            <header><h2><a href="{% url editor 'default' chain.name %}">{{ chain.name }}</a></h2></header>
+            <div class="like_box">
+                <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
+                <button class="like" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'True')">like</button>
+                <button class="dislike" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'False')">unlike</button>
+            </div>
         </article>    
     {% endfor %}
 {% endblock %}

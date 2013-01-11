@@ -26,3 +26,9 @@ class Chain(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def like(self):
+        self.likes += 1
+
+    def dislike(self):
+        self.likes -= 1
