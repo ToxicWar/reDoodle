@@ -5,7 +5,7 @@
 {% block section %}
     {% for chain in chainsInDefaultRoom %}
         <article>
-            <header><h2>{{ chain.name }}</h2></header>
+            <header><h2>{{ chain.name }}{{ some_var }}</h2></header>
             <p></p>
         </article>    
     {% endfor %}

@@ -7,6 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^reg/', include('redoodle.reg.urls')),
     url(r'^(\w+)/$', room, name='room'),
     url(r'^(\w+)/(\w+)/$', editor, name='editor'),
 

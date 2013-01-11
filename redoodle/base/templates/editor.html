@@ -16,6 +16,7 @@
         var mouse_x=0,mouse_y=0,mouse_shift=[0,0];
 
         function handleMouseMove(event) {
+            mouse_shift=getPos(canvas);//TODO: update on zoom, add scroll
             //event=event || window.event;//IE fix
             mouse_x=event.clientX-mouse_shift[0];
             mouse_y=event.clientY-mouse_shift[1];
@@ -29,6 +30,7 @@
         }
 
         function handleMouseDown(event) {
+            alert(canvas.toDataURL());
             if (mode==1)
                 paint.start(mouse_x,mouse_y,getPressure());
             else
@@ -37,7 +39,7 @@
 
         function handleMouseUp(event) {
             if (mode==1)
-                log("[line pixels/second, points/second]: "+paint.end());
+                paint.end();//log("[line pixels/second, points/second]: "+paint.end());
             else
                 imgTransf.drop();
         }
@@ -139,7 +141,7 @@
             rc = canvas.getContext("2d");
             paint=new Paint(canvas);
             imgTransf=new ImageTransformer(paint.layer[0],
-            "http://cs405524.userapi.com/v405524078/4286/qeBfEZLcafE.jpg",
+            null,//"http://cs405524.userapi.com/v405524078/4286/qeBfEZLcafE.jpg"
             function() {paint.refresh();});
 
 
