@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="{% static 'css/farbtastic.css' %}">
     <link rel="stylesheet" href="{% static 'css/palette.css' %}">
 
+    <script src="{% static 'js/utils.js' %}"></script>
+
     <script src="{% static 'js/graphics-editor/util.js' %}"></script>
     <script src="{% static 'js/graphics-editor/paint.js' %}"></script>
     <script src="{% static 'js/graphics-editor/history.js' %}"></script>
@@ -16,7 +18,6 @@
         var mouse_x=0,mouse_y=0,mouse_shift=[0,0];
 
         function handleMouseMove(event) {
-            mouse_shift=getPos(canvas);//TODO: update on zoom, add scroll
             //event=event || window.event;//IE fix
             mouse_x=event.clientX-mouse_shift[0];
             mouse_y=event.clientY-mouse_shift[1];
@@ -30,7 +31,6 @@
         }
 
         function handleMouseDown(event) {
-            alert(canvas.toDataURL());
             if (mode==1)
                 paint.start(mouse_x,mouse_y,getPressure());
             else
@@ -39,7 +39,7 @@
 
         function handleMouseUp(event) {
             if (mode==1)
-                paint.end();//log("[line pixels/second, points/second]: "+paint.end());
+                log("[line pixels/second, points/second]: "+paint.end());
             else
                 imgTransf.drop();
         }
@@ -141,7 +141,7 @@
             rc = canvas.getContext("2d");
             paint=new Paint(canvas);
             imgTransf=new ImageTransformer(paint.layer[0],
-            null,//"http://cs405524.userapi.com/v405524078/4286/qeBfEZLcafE.jpg"
+            "{% static 'room/'%}{{ room }}/{{ chain }}/{{ image_name }}.png",
             function() {paint.refresh();});
 
 
@@ -203,6 +203,6 @@
         <div id="picker"></div>
         <div id="buttons"></div>
         <button>Magic button</button>
-        <button type="submit" >Send it...</button>
+        <button onclick="send_image(canvas, '{{ room }}', '{{ chain }}', '{% url save_image %}')">Send it...</button>
     </div>
 {% endblock %}
