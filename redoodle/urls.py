@@ -12,8 +12,8 @@ urlpatterns = patterns('',
     url(r'^save_image/$', save_image, name='save_image'),
     url(r'^reg/', include('redoodle.reg.urls')),
     url(r'^like_chain/$', like, name='like_chain'),
-    url(r'^(\w+)/$', room, name='room'),
-    url(r'^(\w+)/(\w+)/$', editor, name='editor'),
+    url(r'^(.+)/$', room, name='room'),
+    url(r'^(.+)/(.+)/$', editor, name='editor'),
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
