@@ -1,4 +1,10 @@
 # coding: utf-8
+import os
+from django.core.exceptions import ImproperlyConfigured
+try:
+    VIRTUAL_ENV = os.environ['VIRTUAL_ENV']
+except KeyError:
+    raise ImproperlyConfigured('This should be used only inside virtual env')
 # Django settings for redoodle project.
 
 DEBUG = True
@@ -13,7 +19,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'redoodle.db',                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(VIRTUAL_ENV, 'vernel8.db'),  # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
