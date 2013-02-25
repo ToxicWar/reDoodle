@@ -107,7 +107,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'redoodle.urls'
 
-PATH_ROOMS = 'redoodle/base/static/room/'
+PATH_ROOMS = 'base/static/room/'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'redoodle.wsgi.application'
@@ -120,8 +120,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'redoodle.base',
-    'redoodle.reg',
+    'base',
+    'reg',
     'south',
     'django_extensions',
     'django.contrib.auth',

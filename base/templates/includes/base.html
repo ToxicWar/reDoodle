@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <meta charset=utf-8>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/redoodle.css' %}">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="{% static 'css/scroll.css' %}"/>
+    <script src="{% static 'js/jquery.scroll.min.js' %}"></script>
+    {% block style_and_script %}{% endblock %}
+</head>
+<body>
+    <div class="main">
+        <div class="head">
+            {% block header %}{% endblock %}
+        </div>
+        <div class="hidden" id="menu">
+             {% block menu %}{% endblock %}
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="footerindex">
+            <div class="zlc">Зызлочуй, 2012.</div> 
+            <!-- А без этого жуткого куска не работает скролл -->
+            <ul style="font-size:0;">
+                <li>Event: <b id="event"></b></li>
+                <li>Config:
+                    <ul>
+                        <li>cls: <b id="cls"></b></li>
+                        <li>drag_old: <b id="drag_old"></b></li>
+                        <li>horizontal: <b id="horizontal-track"></b></li>
+                        <li>start: <b id="start"></b></li>
+                        <li>step: <b id="step"></b></li>
+                    </ul>
+                </li>
+                <li>Event obj node: <b id="selector"></b></li>
+                <li>tracking:
+                <ul>
+                    <li>scrollHeight: <b id="scrollHeight"></b></li>
+                    <li>paneHeight: <b id="paneHeight"></b></li>
+                    <li>dragHeight: <b id="dragHeight"></b></li>
+                    <li>dragTop: <b id="dragTop"></b></li>
+                    <li>dragBot: <b id="dragBot"></b></li>
+                </ul>
+                </li>
+            </ul>
+            {% block footer %}{% endblock %}
+            </div>
+        </div>
+</body>
+</html>
