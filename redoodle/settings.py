@@ -122,6 +122,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'base',
     'reg',
+    'graphics_editor',
     'south',
     'django_extensions',
     'django.contrib.auth',

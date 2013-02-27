@@ -6,6 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', index, name='index'),
+    url(r'', include('graphics_editor.urls')),
     url(r'^my_little_admin/', include(admin.site.urls)),
     url(r'^add_room/$', add_room, name='add_room'),
     url(r'^add_chain/$', add_chain, name='add_chain'),
