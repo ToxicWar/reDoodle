@@ -1,0 +1,5 @@
+-e git://github.com/bolster/django-extensions.git#egg=django_extensions
+south
+ipython  # -\
+         #   develop
+ipdb     # -/
