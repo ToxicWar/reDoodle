@@ -1,6 +1,6 @@
 function getCookie(name) {
     var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
+    if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {
             var cookie = jQuery.trim(cookies[i]);
@@ -14,15 +14,28 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
 function send_image(canvas, room, chain, url) {
     var base64 = canvas.toDataURL();
-    //var csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+        crossDomain: false,
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                var csrftoken = getCookie('csrftoken');
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
     $.ajax({
             type: "POST",
             url: url,
             data: {'base64': base64, 'room': room, 'chain': chain},
             //contentType: "application/json; charset=utf-8",
-            dataType: "text",
+            dataType: 'text',
             async: true,
             cache: false,
             success: function(data) {
@@ -37,7 +50,7 @@ function send_image(canvas, room, chain, url) {
 }
 
 function like(url, chain, like) {
-    like_class = '.'+chain+'_like_count'
+    like_class = '.'+chain+'_like_count';
     $.ajax({
             type: "GET",
             url: url,
@@ -47,7 +60,7 @@ function like(url, chain, like) {
             async: true,
             cache: false,
             success: function(data) {
-                $(like_class).html(data)
+                $(like_class).html(data);
             },
             fail: function(data) {
                 alert('Fail.');
