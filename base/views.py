@@ -105,7 +105,6 @@ def like(request):
         if request.method == 'GET':
             chain_name = request.GET['chain']
             like = request.GET['like']
-            print 'AJAX request ' + chain_name + ' ' + str(like)
             chain = Chain.objects.get(name=chain_name)
             if like == 'True':
                 chain.like()
