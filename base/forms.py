@@ -6,6 +6,9 @@ class AddRoomForm(forms.Form):
 
 
 class AddChainInRoom(forms.Form):
-    # TODO(ToxicWar): Use hidden field and static information about the room
     room_name = forms.CharField(required=True, widget=forms.HiddenInput())
     chain_name = forms.CharField(label='Chain room', max_length=255)
+
+
+class SaveImage(forms.Form):
+    pass
