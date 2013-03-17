@@ -4,9 +4,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from base.models import Chain, Room
-from base.forms import AddRoomForm, AddChainInRoom
-from django.views.decorators.csrf import csrf_exempt
-from base64 import b64decode
+from base.forms import AddRoomForm, AddChainInRoom, SaveImage
 from redoodle.settings import PATH_ROOMS
 import os
 
@@ -92,32 +90,14 @@ class AddChainView(FormView):
 add_chain = AddChainView.as_view()
 
 
-@csrf_exempt
-def save_image(request):
-    if request.is_ajax():
-        if request.method == 'POST':
-            data = request.POST['base64']
-            room_name = request.POST['room']
-            chain_name = request.POST['chain']
-            print 'room name: ' + room_name + ', chain name: ' + chain_name
-            message = 'Image sended.'
-            image_name = len(os.listdir(PATH_ROOMS + room_name + '/' + chain_name + '/'))
-            print 'open file ' + str(image_name) + '.png'
-            f = open(PATH_ROOMS + room_name + '/' + chain_name + '/' + str(image_name) + '.png', "wb")
-            try:
-                data = data.strip('data:image/png;base64')
-                imgData = b64decode(data)
-                f.write(imgData)
-            except:
-                print 'Fail save image.'
-                message = 'Fail save image.'
-            f.close()
-            print 'close file'
-        else:
-            message = 'Fail save image.'
-    else:
-        return HttpResponse(status=403)
-    return HttpResponse(message)
+class SaveImageView(FormView):
+    form_class = SaveImage
+
+    def form_valid(self, form):
+        result = form.save_image()
+        return HttpResponse(result)
+
+save_image = SaveImageView.as_view()
 
 
 def like(request):
