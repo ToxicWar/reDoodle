@@ -1,0 +1,80 @@
+{% extends "includes/base.html" %}
+
+{% load static %}
+{% block style_and_script %}
+    <script src="{% static 'js/utils.js' %}"></script>
+{% endblock %}
+
+{% block title %}reDoodle{% endblock %}
+
+
+{% block header %}
+    <div class="logo">
+    </div>
+    <div class="login" id="menubutton">
+        Какой сегодня день, Усик?
+    </div>
+{% endblock %}
+{% block menu %}
+    <!-->эх вы кони мои кони<-->
+{% endblock %}
+{% block content %}
+    {% for chain in chainsInDefaultRoom %}
+        <div class="chaincontainer" id="mainchains">
+            <div class="containertop" id="regulargrad">
+                <div class="chainname">
+                    <a href="{% url editor 'default' chain.name %}">
+                        <p class="name" onmouseover="this.style.textDecoration ='underline'; this.style.color='#0000ff';" onmouseout="this.style.textDecoration='none'; this.style.color='#FBFBFF';">{{ chain.name }}<p>
+                    </a>
+                </div>
+                <div class="chainlikes" >
+                    <span class="{{ chain.name }}_like_count">
+                        <p class="likes">{{ chain.likes }}<p>
+                    </span>
+                    <div class="like_box">
+                        <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
+                        <button class="like" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'True')">like</button>
+                        <button class="dislike" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'False')">unlike</button>
+                    </div>
+                </div>
+            </div>
+            <div class="containerbody scroll-horizontal scroll">
+                <div class="chainline">
+                                <!--Тут могли быть ваши картинки-->
+                </div>
+            </div>
+            <div class="chainbottom" id="changeview_1" onMouseOver>
+                Показать столбиком
+            </div>
+        </div>
+    {% endfor %}
+    
+    <div class="userinfo">
+        <li class="rooms">
+            <ul>
+                <a href="/default">Общая</a>
+                <!-- а тут могла бы быть ваша нафигация (лол опечатался, так и оставлю) -->
+            </ul>
+            <ul>
+                <div style="padding-top:5px;"> <!-- ну создавать же мне класс с одной строкой кода мне для единственного дива на сайте? -->
+                <!--
+                    <a href="" class="create">Создать</a> 
+                    </br>
+                    <a href="" class="enter">Войти</a>
+                -->
+                    <form action="{% url add_room %}" method="POST">
+                        {% csrf_token %}
+                        <div class="field">
+                            {{ form.room_name.errors }}
+                            <label for="id_room_name">Room name:</label>
+                            {{ form.room_name }}
+                        </div>
+                        <input type="submit" /> 
+                    </form>
+                </div>
+            </ul>
+        </li>
+    </div>  
+{% endblock %}
+{% block footer %}
+{% endblock %}
