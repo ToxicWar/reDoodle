@@ -1,5 +1,5 @@
 from django.template.response import TemplateResponse
-from django.contrib.auth import logout as auth_logout
+from django,contrib.auth import logout as auth_logout
 from django.shortcuts import redirect
 
 

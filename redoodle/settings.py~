@@ -104,7 +104,6 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'reg.middleware.LoginMiddleware',
-    'reg.middleware.RegistrationMiddleware',
 )
 
 ROOT_URLCONF = 'redoodle.urls'

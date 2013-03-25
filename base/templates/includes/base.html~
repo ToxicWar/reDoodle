@@ -12,7 +12,7 @@
 <body>
     <div class="main">
         {% if request.user.is_authenticated %}
-            {{ request.user.username }}, велкам! Wanna some <a href="{% url logout %}">логаут</a>?
+            {{ request.user.username }}, велкам!
         {% else %}
             <form method="POST" action="">{% csrf_token %}{{ request.login_form }}<input type="submit" value="Go"></form>
             Wanna some <a href="{% url register %}">рега</a>?
