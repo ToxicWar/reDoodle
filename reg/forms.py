@@ -40,7 +40,7 @@ class LoginForm(forms.Form):
 
 class RegistrationForm(forms.Form):
 	username = forms.CharField()
-	email = forms.EmailField()
+	email = forms.EmailField(required=False)
 	password = forms.CharField(widget=forms.PasswordInput())
 	reg_form_mark = forms.CharField(widget=forms.HiddenInput(),
 	                                required=False, label="")

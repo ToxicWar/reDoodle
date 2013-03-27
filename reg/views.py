@@ -1,6 +1,10 @@
 from django.template.response import TemplateResponse
+from django.template.loader import render_to_string
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import redirect
+from django.http import Http404, HttpResponse
+from django.conf import settings
+from django.core import validators
 
 
 #TODO: move this to middleware
@@ -13,6 +17,49 @@ def logout(request):
 
 def register(request):
 	return TemplateResponse(request, "register.html")
+
+
+#TODO: do something with HttpResponse'es
+#TODO: mb use render_to_string(file, context)
+#mail server: python -m smtpd -n -c DebuggingServer localhost:1025
+#steps:
+# * POST - get email (if any), send code to email
+# * GET  - get code, compare, activate
+#confirmation code is stored in user's first name
+def mail_confirm_send(user):
+	code = str(12345 + user.id)  #TODO: normal generation
+	user.first_name = code
+	user.email_user("Wanna enlarge your... permissions?", "Message, code: "+code, settings.DEFAULT_FROM_EMAIL)
+
+def mail_confirm_view(request):
+	user = request.user
+	#(1) mail sending phase
+	if request.POST:
+		#saving email
+		if 'email' in request.POST:
+			email = request.POST['email']
+			try:
+				validators.validate_email(email)
+			except ValidationError, e:
+				#TODO: do it NORMAL way (mb params to context, mb use messages)
+				return HttpResponse(e.messages[0])
+			user.email = email
+		
+		#sending code
+		if user.email:
+			mail_confirm_send(user)
+			user.save()
+			return HttpResponse("Code was sended. Check e-mail.")
+	#(2) mail confirmation phase
+	elif request.GET and 'code' in request.GET:
+		if request.GET['code'] == user.first_name:
+			user.is_active = True
+			user.first_name = ''
+			user.save()
+			return HttpResponse("Activation complete!")
+	
+	raise Http404
+
 
 
 #from django.template.response import TemplateResponse

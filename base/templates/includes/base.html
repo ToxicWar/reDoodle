@@ -12,9 +12,22 @@
 <body>
     <div class="main">
         {% if request.user.is_authenticated %}
-            {{ request.user.username }}, велкам! Wanna some <a href="{% url logout %}">логаут</a>?
+            {{ request.user.username }}, велкам! Wanna some <a href="{% url logout %}">логаут</a>
+            {% if not request.user.email %}
+                <form method="POST" action="{% url mail_confirm %}">
+                    {% csrf_token %}
+                    or set your <input type="text" name="email" placeholder="мыльцо">
+                    <input type="submit" value="Ok">
+                </form>?
+            {% else %}
+                {% if not request.user.is_active %}or proove your <a href="{% url mail_confirm %}">мыльцо</a>{% endif %}?
+            {% endif %}
         {% else %}
-            <form method="POST" action="">{% csrf_token %}{{ request.login_form }}<input type="submit" value="Go"></form>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ request.login_form }}
+                <input type="submit" value="Go">
+            </form>
             Wanna some <a href="{% url register %}">рега</a>?
         {% endif %}
         <div class="head">
