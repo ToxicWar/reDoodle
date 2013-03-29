@@ -2,25 +2,7 @@
 
 #Django settings for redoodle project.
 
-import os
-
-
-
-# fix for 4ui
-M_3bl3, M_4UI = range(2)
-SETTINGS_MODE = M_3bl3
-
-if SETTINGS_MODE == M_4UI:
-    from django.core.exceptions import ImproperlyConfigured
-    try:
-        VIRTUAL_ENV = os.environ['VIRTUAL_ENV']
-    except KeyError:
-        raise ImproperlyConfigured('This should be used only inside virtual env')
-    DB_PATH = os.path.join(VIRTUAL_ENV, 'redoodle.db')
-
-elif SETTINGS_MODE == M_3bl3:
-    DB_PATH = 'redoodle.db'
-
+print "Base settings file"
 
 
 DEBUG = True
@@ -35,7 +17,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DB_PATH,  # Or path to database file if using sqlite3.
+        'NAME': '',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
