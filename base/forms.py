@@ -1,5 +1,5 @@
 from django import forms
-from redoodle.settings import PATH_ROOMS
+from .conf import app_settings
 from base64 import b64decode
 import os
 
@@ -23,8 +23,8 @@ class SaveImage(forms.Form):
         room_name = self.cleaned_data['room']
         chain_name = self.cleaned_data['chain']
         message = 'Image sended.'
-        image_name = len(os.listdir(os.path.join(PATH_ROOMS, room_name, chain_name)))
-        f = open(os.path.join(PATH_ROOMS, room_name, chain_name, str(image_name) + '.png'), "wb")
+        image_name = len(os.listdir(os.path.join(app_settings.PATH_ROOMS, room_name, chain_name)))
+        f = open(os.path.join(app_settings.PATH_ROOMS, room_name, chain_name, str(image_name) + '.png'), "wb")
         try:
             data = data.strip('data:image/png;base64')
             imgData = b64decode(data)
