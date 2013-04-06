@@ -1,0 +1,9 @@
+[
+  {
+    "model": "base.room",
+    "pk": 1,
+    "fields": {
+      "name": "default"
+    }
+  }
+]
