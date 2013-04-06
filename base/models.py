@@ -1,5 +1,6 @@
 # coding: utf-8
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Room(models.Model):
@@ -27,8 +28,23 @@ class Chain(models.Model):
     def __unicode__(self):
         return self.name
 
-    def like(self):
+    def like(self, user):
+        Like.objects.create(chain=self, user=user)
         self.likes += 1
 
-    def dislike(self):
+    def dislike(self, user):
+        user_like = Like.objects.get(chain=self, user=user)
+        user_like.delete()
         self.likes -= 1
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User)
+    chain = models.ForeignKey(Chain)
+
+    class Meta:
+        verbose_name = 'Like'
+        verbose_name_plural = 'Likes'
+
+    def __unicode__(self):
+        return '%s_%s' % (self.user.username, self.chain.name)
