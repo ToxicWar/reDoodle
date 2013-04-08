@@ -2,6 +2,7 @@ django==1.4.3
 -e git://github.com/bolster/django-extensions.git#egg=django_extensions
 south
 -e git://github.com/jezdez/django-appconf.git#egg=appconf
+
 ipython  # -\
          #   develop
 ipdb     # -/
