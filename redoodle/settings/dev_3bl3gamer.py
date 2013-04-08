@@ -1,14 +1,10 @@
 # coding: utf-8
-from .local import *
+from base import *
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join('c:/usichka', 'redoodle.db'),
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+DATABASES['default']['NAME'] = '../redoodle.db'
+
+MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
