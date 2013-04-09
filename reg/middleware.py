@@ -36,7 +36,8 @@ class LoginMiddleware(object):
 				# * it is for redirection path checking
 				
 				return redirect(
-					reverse('index') if path == reverse('login') else path)
+					reverse('index') if request.path == reverse('login')
+					else request.path)
 				
 			else:
 				# not valid
