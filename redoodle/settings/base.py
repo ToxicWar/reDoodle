@@ -1,6 +1,6 @@
 # coding: utf-8
 TIME_ZONE = 'Europe/Moscow'
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True

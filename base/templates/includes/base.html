@@ -12,7 +12,7 @@
 <body>
     <div class="main">
         {% if request.user.is_authenticated %}
-            {{ request.user.username }}, велкам! Wanna some <a href="{% url logout %}">логаут</a>
+            {{ request.user.username }}, Welcome! Wanna some <a href="{% url logout %}">logout</a>
             {% if not request.user.email %}
                 <form method="POST" action="{% url mail_confirm %}">
                     {% csrf_token %}
@@ -20,7 +20,7 @@
                     <input type="submit" value="Ok">
                 </form>?
             {% else %}
-                {% if not request.user.is_active %}or proove your <a href="{% url mail_confirm %}">мыльцо</a>{% endif %}?
+                {% if not request.user.is_active %}or proove your <a href="{% url mail_confirm %}">email</a>{% endif %}?
             {% endif %}
         {% else %}
             <form method="POST" action="">
@@ -28,7 +28,7 @@
                 {{ request.login_form }}
                 <input type="submit" value="Go">
             </form>
-            Wanna some <a href="{% url register %}">рега</a>?
+            Wanna some <a href="{% url register %}">sign up</a>?
         {% endif %}
         <div class="head">
             {% block header %}{% endblock %}
@@ -40,10 +40,9 @@
             {% block content %}{% endblock %}
         </div>
         <div class="footerindex">
-            <div class="zlc">Зызлочуй, 2012.</div> 
+            <div class="zlc">3bl3lo4ui, 2012.</div>
             <!-- А без этого жуткого куска не работает скролл -->
             <!-- уупс -->
-
             {% block footer %}{% endblock %}
             </div>
         </div>
