@@ -16,6 +16,22 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
         context['chainsInDefaultRoom'] = Chain.objects.filter(room__name='default')
         context['form'] = kwargs.get('form', AddRoomForm())
+        #remove from here
+        """if 'request' in context:
+            print "request in context"
+        else:
+            print "request not in context"
+            context['request'] = lambda: None
+        context['request'].login_form = "form from index" #remove it
+        
+        if hasattr(self.request, 'login_form'):
+            print "fisr", self.request.login_form
+        else:
+            print "fnisr"
+        self.request.login_form = "form from index2" """
+        #to here
+        # it sets login_form to request, later it is
+        # overwritten by context processor (possible data transfer)
         return context
 
 index = IndexView.as_view()

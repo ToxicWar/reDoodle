@@ -30,8 +30,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'reg.middleware.LoginMiddleware',
-    'reg.middleware.RegistrationMiddleware',
+    #'reg.middleware.LoginMiddleware',
+    #'reg.middleware.RegistrationMiddleware',
 )
 
 ROOT_URLCONF = 'redoodle.urls'
@@ -47,6 +47,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
+    'reg.context_processors.reg_forms'
 )
 
 INSTALLED_APPS = (
