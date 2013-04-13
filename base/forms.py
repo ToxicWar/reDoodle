@@ -9,7 +9,18 @@ class AddRoomForm(forms.Form):
 
 
 class AddChainInRoom(forms.Form):
+    # The day was coming to the end when 4ui припекло write some comments.
+    # So he remembered all the разговорный he knew and started writing
+    # his first comment.
+    # After a couple of minutes of hard brain work and loud keyboard
+    # buttons clicks The First Comment was written!
+    # Hete it is:
     # room name hidden field (data are substituted into views)
+    # Althoug it may be better not to mix times togeter as Lutece did
+    # and write someting like "data will be subsituted ... "
+    #                      or "data is substituted"
+    # we'll remain it as it is in memory of
+    #            *** The Great Day Of The First 4ui Comment ***
     room_name = forms.CharField(required=True, widget=forms.HiddenInput())
     chain_name = forms.CharField(label='Chain room', max_length=255)
 
