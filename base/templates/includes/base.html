@@ -10,7 +10,7 @@
     {% block style_and_script %}{% endblock %}
 </head>
 <body>
-    <div class="main">
+    <div class="main">{{request.login_form}}
         {% if request.user.is_authenticated %}
             {{ request.user.username }}, Welcome! Wanna some <a href="{% url logout %}">logout</a>
             {% if not request.user.email %}

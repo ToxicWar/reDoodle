@@ -16,6 +16,22 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
         context['chainsInDefaultRoom'] = Chain.objects.filter(room__name='default')
         context['form'] = kwargs.get('form', AddRoomForm())
+        #remove from here
+        """if 'request' in context:
+            print "request in context"
+        else:
+            print "request not in context"
+            context['request'] = lambda: None
+        context['request'].login_form = "form from index" #remove it
+        
+        if hasattr(self.request, 'login_form'):
+            print "fisr", self.request.login_form
+        else:
+            print "fnisr"
+        self.request.login_form = "form from index2" """
+        #to here
+        # it sets login_form to request, later it is
+        # overwritten by context processor (possible data transfer)
         return context
 
 index = IndexView.as_view()
@@ -43,11 +59,14 @@ class EditorView(TemplateView):
         context['chain'] = kwargs['chain']
         # TODO: Transform to a nice design
         try:
+            # create room folder
             os.mkdir(os.path.join(app_settings.PATH_ROOMS, context['room']))
         except OSError:
             try:
+                # create chain folder
                 os.mkdir(os.path.join(app_settings.PATH_ROOMS, context['room'], context['chain']))
             except OSError:
+                # getting image name
                 context['image_name'] = len(os.listdir(os.path.join(app_settings.PATH_ROOMS, context['room'], context['chain']))) - 1
         return context
 
@@ -59,9 +78,13 @@ class AddRoomView(FormView):
 
     def form_valid(self, form):
         room_name = form.cleaned_data['room_name']
+        # r1 - object, r2 - created
         r1, r2 = Room.objects.get_or_create(name=room_name)
+        # if created room
         if r2 is True:
+            # then created room folder
             os.mkdir(os.path.join(app_settings.PATH_ROOMS, room_name))
+        # success url - /room name/
         self.success_url = reverse_lazy('room', kwargs={'room': room_name})
         return super(AddRoomView, self).form_valid(form)
 
@@ -94,6 +117,7 @@ class SaveImageView(FormView):
     form_class = SaveImage
 
     def form_valid(self, form):
+        # result: 'Image sended.' or 'Fail save image.'
         result = form.save_image()
         return HttpResponse(result)
 
