@@ -33,8 +33,8 @@
                     </span>
                     <div class="like_box">
                         <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
-                        <button class="like" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'True')">like</button>
-                        <button class="dislike" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'False')">unlike</button>
+                        <button class="like" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'True')">like</button>
+                        <button class="dislike" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'False')">unlike</button>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     </br>
                     <a href="" class="enter">Войти</a>
                 -->
-                    <form action="{% url add_room %}" method="POST">
+                    <form action="{% url add-room %}" method="POST">
                         {% csrf_token %}
                         <div class="field">
                             {{ form.room_name.errors }}

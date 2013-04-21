@@ -51,11 +51,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
-    'base',
-    'reg',
-    'south',
-    'appconf',
-    'django_extensions',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -63,4 +58,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+
+    'base',
+    'reg',
+
+    'south',
+    'appconf',
+    'django_extensions',
 )

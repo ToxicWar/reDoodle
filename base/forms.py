@@ -1,3 +1,4 @@
+# coding: utf-8
 from django import forms
 from .conf import app_settings
 from base64 import b64decode
@@ -9,8 +10,6 @@ class AddRoomForm(forms.Form):
 
 
 class AddChainInRoom(forms.Form):
-    # The day was coming to the end when 4ui припекло write some comments.
-    # So he remembered all the разговорный he knew and started writing
     # his first comment.
     # After a couple of minutes of hard brain work and loud keyboard
     # buttons clicks The First Comment was written!

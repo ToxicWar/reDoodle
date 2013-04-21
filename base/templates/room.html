@@ -24,7 +24,7 @@
     <!-->кони конные мои!<-->
 {% endblock %}
 {% block content %}
-    <form action="{% url add_chain %}" method="POST">
+    <form action="{% url add-chain %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="room_name" id="id_room_name" value="{{ room }}"/>
         <div class="field">
@@ -51,8 +51,8 @@
                         </span>
                         <div class="like_box">
                             <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
-                            <button class="like" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'True')">like</button>
-                            <button class="dislike" onclick="like('{% url like_chain %}', '{{ chain.name }}', 'False')">unlike</button>
+                            <button class="like" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'True')">like</button>
+                            <button class="dislike" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'False')">unlike</button>
                         </div>
                     </div>
                 </div>
