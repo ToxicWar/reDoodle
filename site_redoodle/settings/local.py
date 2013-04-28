@@ -13,7 +13,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(VIRTUAL_ENV, 'redoodle.db'),
+        'NAME': os.path.join(VIRTUAL_ENV, 'site_redoodle.db'),
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',

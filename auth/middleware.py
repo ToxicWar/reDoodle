@@ -73,18 +73,18 @@ class RegistrationMiddleware(object):
 		
 		if request.POST and 'reg_form_mark' in request.POST:
 			#if  POST has commen and mark was found, it's a registration attempt
-			print "reg POST"
+			print "auth POST"
 			
 			form = RegistrationForm(data=request.POST)
 			if form.is_valid():  # valid - create user
 				form.save()  # creates User object and saves it
 				return TemplateResponse(request, "reg_complete.html")
 			else:
-				# if not valid on reg page, just refresh it
+				# if not valid on auth page, just refresh it
 				if request.path == reverse('register'):
 					request.reg_form = form
 					return TemplateResponse(request, 'register.html')
-				else:  # if not on reg page, redirect to it
+				else:  # if not on auth page, redirect to it
 					request.session['reg_form'] = form
 					return redirect('register')
 			
@@ -92,12 +92,12 @@ class RegistrationMiddleware(object):
 			# if it's not POST, prepare form
 			if 'reg_form' in request.session:
 				# form found in backup => was redirected here
-				print "reg not POST, found form"
+				print "auth not POST, found form"
 				form = request.session['reg_form']
 				del request.session['reg_form']
 			else:
 				# no form in backup => page just has been opened
-				print "reg not POST, no form"
+				print "auth not POST, no form"
 				form = RegistrationForm()
 		
 		request.reg_form = form

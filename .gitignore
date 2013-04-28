@@ -2,6 +2,3 @@
 *.log
 *.pot
 *.pyc
-local_settings.py
-redoodle/base/static/room
-.idea

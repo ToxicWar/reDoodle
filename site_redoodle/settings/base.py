@@ -28,16 +28,12 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'reg.middleware.LoginMiddleware',
-    #'reg.middleware.RegistrationMiddleware',
 )
 
-ROOT_URLCONF = 'redoodle.urls'
+ROOT_URLCONF = 'site_redoodle.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'redoodle.wsgi.application'
+WSGI_APPLICATION = 'site_redoodle.wsgi.application'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -47,7 +43,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
-    'reg.context_processors.reg_forms'
+    'auth.context_processors.reg_forms'
 )
 
 INSTALLED_APPS = (
@@ -59,10 +55,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
-    'base',
-    'reg',
+    'redoodle',
+    'auth',
 
     'south',
-    'appconf',
     'django_extensions',
 )

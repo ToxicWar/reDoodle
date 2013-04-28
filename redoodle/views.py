@@ -3,9 +3,8 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
-from base.models import Chain, Room
-from base.forms import AddRoomForm, AddChainInRoom, SaveImage
-from .conf import app_settings
+from redoodle.models import Chain, Room
+from redoodle.forms import AddRoomForm, AddChainInRoom, SaveImage
 import os
 
 
@@ -60,14 +59,14 @@ class EditorView(TemplateView):
         # TODO: Transform to a nice design
         try:
             # create room folder
-            os.mkdir(os.path.join(app_settings.PATH_ROOMS, context['room']))
+            os.mkdir(os.path.join('redoodle/static/room/', context['room']))
         except OSError:
             try:
                 # create chain folder
-                os.mkdir(os.path.join(app_settings.PATH_ROOMS, context['room'], context['chain']))
+                os.mkdir(os.path.join('redoodle/static/room/', context['room'], context['chain']))
             except OSError:
                 # getting image name
-                context['image_name'] = len(os.listdir(os.path.join(app_settings.PATH_ROOMS, context['room'], context['chain']))) - 1
+                context['image_name'] = len(os.listdir(os.path.join('redoodle/static/room/', context['room'], context['chain']))) - 1
         return context
 
 editor = EditorView.as_view()
@@ -83,7 +82,7 @@ class AddRoomView(FormView):
         # if created room
         if r2 is True:
             # then created room folder
-            os.mkdir(os.path.join(app_settings.PATH_ROOMS, room_name))
+            os.mkdir(os.path.join('redoodle/static/room/', room_name))
         # success url - /room name/
         self.success_url = reverse_lazy('room', kwargs={'room': room_name})
         return super(AddRoomView, self).form_valid(form)
@@ -103,7 +102,7 @@ class AddChainView(FormView):
         room = Room.objects.get(name=room_name)
         r1, r2 = room.chain_set.get_or_create(name=chain_name)
         if r2 is True:
-            os.mkdir(os.path.join(app_settings.PATH_ROOMS, room_name, chain_name))
+            os.mkdir(os.path.join('redoodle/static/room/', room_name, chain_name))
         self.success_url = reverse_lazy('editor', kwargs={'room': room_name, 'chain': chain_name})
         return super(AddChainView, self).form_valid(form)
 

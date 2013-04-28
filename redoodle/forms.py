@@ -1,6 +1,5 @@
 # coding: utf-8
 from django import forms
-from .conf import app_settings
 from base64 import b64decode
 import os
 
@@ -36,9 +35,9 @@ class SaveImage(forms.Form):
         chain_name = self.cleaned_data['chain']
         message = 'Image sended.'
         # image_name = number of files
-        image_name = len(os.listdir(os.path.join(app_settings.PATH_ROOMS, room_name, chain_name)))
+        image_name = len(os.listdir(os.path.join('redoodle/static/room/', room_name, chain_name)))
         # create and open file
-        f = open(os.path.join(app_settings.PATH_ROOMS, room_name, chain_name, str(image_name) + '.png'), "wb")
+        f = open(os.path.join('redoodle/static/room/', room_name, chain_name, str(image_name) + '.png'), "wb")
         try:
             # decode base64 and save image
             data = data.strip('data:image/png;base64')
