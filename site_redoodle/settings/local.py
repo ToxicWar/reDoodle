@@ -10,17 +10,9 @@ except KeyError:
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(VIRTUAL_ENV, 'site_redoodle.db'),
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
 MEDIA_ROOT = os.path.join(VIRTUAL_ENV, 'www/media')
 STATIC_ROOT = os.path.join(VIRTUAL_ENV, 'www/static')
+
+INSTALLED_APPS += (
+    'django_extensions',
+)
