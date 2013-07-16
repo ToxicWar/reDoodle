@@ -24,7 +24,7 @@
     <!-->кони конные мои!<-->
 {% endblock %}
 {% block content %}
-    <form action="{% url add-chain %}" method="POST">
+    <form action="{% url 'add-chain' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="room_name" id="id_room_name" value="{{ room }}"/>
         <div class="field">
@@ -41,7 +41,7 @@
             <div class="chaincontainer">
                 <div class="containertop" id="regulargrad">
                     <div class="chainname">
-                        <a href="{% url editor room chain.name %}">
+                        <a href="{% url 'editor' room chain.name %}">
                             <p class="name" onmouseover="this.style.textDecoration ='underline'; this.style.color='#0000ff';" onmouseout="this.style.textDecoration='none'; this.style.color='#FBFBFF';">{{ chain.name }}<p>
                         </a>
                     </div>
@@ -51,8 +51,8 @@
                         </span>
                         <div class="like_box">
                             <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
-                            <button class="like" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'True')">like</button>
-                            <button class="dislike" onclick="like('{% url like-chain %}', '{{ chain.name }}', 'False')">unlike</button>
+                            <button class="like" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'True')">like</button>
+                            <button class="dislike" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'False')">unlike</button>
                         </div>
                     </div>
                 </div>

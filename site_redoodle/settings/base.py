@@ -20,7 +20,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'site_redoodle.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'site_redoodle.wsgi.application'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
