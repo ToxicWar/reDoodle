@@ -17,9 +17,8 @@ class Room(models.Model):
 class Chain(models.Model):
     name = models.CharField('Name', max_length=255, default='')
     likes = models.PositiveIntegerField('Likes', default=0)
-    isBlocked = models.BooleanField('IsBlocked', default=True)
-    ban = []
-    room = models.ForeignKey(Room)
+    is_blocked = models.BooleanField('Is blocked', default=False)
+    room = models.ForeignKey(Room, verbose_name='Room')
 
     class Meta:
         verbose_name = 'Chain'
@@ -36,6 +35,12 @@ class Chain(models.Model):
         user_like = Like.objects.get(chain=self, user=user)
         user_like.delete()
         self.likes -= 1
+
+
+class Image(models.Model):
+    chain = models.ForeignKey(Chain, verbose_name='Chain')
+    image = models.ImageField('Image', upload_to='redoodle/')
+    ban = models.IntegerField(default=0)
 
 
 class Like(models.Model):

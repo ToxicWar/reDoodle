@@ -15,20 +15,6 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
         context['chainsInDefaultRoom'] = Chain.objects.filter(room__name='default')
         context['form'] = kwargs.get('form', AddRoomForm())
-        #remove from here
-        """if 'request' in context:
-            print "request in context"
-        else:
-            print "request not in context"
-            context['request'] = lambda: None
-        context['request'].login_form = "form from index" #remove it
-        
-        if hasattr(self.request, 'login_form'):
-            print "fisr", self.request.login_form
-        else:
-            print "fnisr"
-        self.request.login_form = "form from index2" """
-        #to here
         # it sets login_form to request, later it is
         # overwritten by context processor (possible data transfer)
         return context
@@ -56,17 +42,8 @@ class EditorView(TemplateView):
         context = super(EditorView, self).get_context_data(**kwargs)
         context['room'] = kwargs['room']
         context['chain'] = kwargs['chain']
-        # TODO: Transform to a nice design
-        try:
-            # create room folder
-            os.mkdir(os.path.join('redoodle/static/room/', context['room']))
-        except OSError:
-            try:
-                # create chain folder
-                os.mkdir(os.path.join('redoodle/static/room/', context['room'], context['chain']))
-            except OSError:
-                # getting image name
-                context['image_name'] = len(os.listdir(os.path.join('redoodle/static/room/', context['room'], context['chain']))) - 1
+        chain, r2 = Chain.objects.get_or_create(name=kwargs['chain'])
+        context['image'] = chain.image_set.order_by('-id')[0]
         return context
 
 editor = EditorView.as_view()
@@ -79,11 +56,6 @@ class AddRoomView(FormView):
         room_name = form.cleaned_data['room_name']
         # r1 - object, r2 - created
         r1, r2 = Room.objects.get_or_create(name=room_name)
-        # if created room
-        if r2 is True:
-            # then created room folder
-            os.mkdir(os.path.join('redoodle/static/room/', room_name))
-        # success url - /room name/
         self.success_url = reverse_lazy('room', kwargs={'room': room_name})
         return super(AddRoomView, self).form_valid(form)
 
@@ -101,8 +73,6 @@ class AddChainView(FormView):
         chain_name = form.cleaned_data['chain_name']
         room = Room.objects.get(name=room_name)
         r1, r2 = room.chain_set.get_or_create(name=chain_name)
-        if r2 is True:
-            os.mkdir(os.path.join('redoodle/static/room/', room_name, chain_name))
         self.success_url = reverse_lazy('editor', kwargs={'room': room_name, 'chain': chain_name})
         return super(AddChainView, self).form_valid(form)
 

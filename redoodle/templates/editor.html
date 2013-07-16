@@ -141,7 +141,7 @@
             rc = canvas.getContext("2d");
             paint=new Paint(canvas);
             imgTransf=new ImageTransformer(paint.layer[0],
-            "{% static 'room/'%}{{ room }}/{{ chain }}/{{ image_name }}.png",
+            "{{ image.image.url }}",
             function() {paint.refresh();});
 
 

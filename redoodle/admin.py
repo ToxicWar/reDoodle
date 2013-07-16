@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.contrib import admin
-from redoodle.models import Room, Chain
+from redoodle.models import Room, Chain, Image
 
 
 class ChainAdmin(admin.ModelAdmin):
@@ -12,3 +12,4 @@ class ChainAdmin(admin.ModelAdmin):
 
 admin.site.register(Room)
 admin.site.register(Chain, ChainAdmin)
+admin.site.register(Image)

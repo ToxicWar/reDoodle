@@ -1,6 +1,8 @@
 # coding: utf-8
+from django.core.files.base import ContentFile
 from django import forms
 from base64 import b64decode
+from redoodle.models import Chain, Image
 import os
 
 
@@ -33,18 +35,17 @@ class SaveImage(forms.Form):
         data = self.cleaned_data['base64']
         room_name = self.cleaned_data['room']
         chain_name = self.cleaned_data['chain']
+        chain = Chain.objects.get(name=chain_name)
         message = 'Image sended.'
-        # image_name = number of files
-        image_name = len(os.listdir(os.path.join('redoodle/static/room/', room_name, chain_name)))
-        # create and open file
-        f = open(os.path.join('redoodle/static/room/', room_name, chain_name, str(image_name) + '.png'), "wb")
+
         try:
             # decode base64 and save image
             data = data.strip('data:image/png;base64')
-            imgData = b64decode(data)
-            f.write(imgData)
-        except:
+            img_data = b64decode(data)
+            image = Image.objects.create(chain=chain)
+            image.image = ContentFile(img_data, '%s.png' % (chain.image_set.count()))
+            image.save()
+        except: # TODO: Fix it
             # exception: Image not saved or data not decode
             message = 'Fail save image.'
-        f.close()
         return message
