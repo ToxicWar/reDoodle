@@ -42,8 +42,11 @@ class EditorView(TemplateView):
         context = super(EditorView, self).get_context_data(**kwargs)
         context['room'] = kwargs['room']
         context['chain'] = kwargs['chain']
-        chain, r2 = Chain.objects.get_or_create(name=kwargs['chain'])
-        context['image'] = chain.image_set.order_by('-id')[0]
+        room, r2 = Room.objects.get_or_create(name=kwargs['room'])
+        chain, r2 = Chain.objects.get_or_create(name=kwargs['chain'], room=room)
+        images = chain.image_set.order_by('-id')
+        if images.count() != 0:
+            context['image'] = images[0]
         return context
 
 editor = EditorView.as_view()
