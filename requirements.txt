@@ -3,8 +3,7 @@ Pillow==2.1.0
 South==0.7.6
 argparse==1.2.1
 dj-database-url==0.2.1
--e git://github.com/jezdez/django-appconf.git@01f2d55e53abd8d81a7aaa559d01027b2e6660ad#egg=django_appconf-dev
--e git://github.com/bolster/django-extensions.git@db42b3ac778db40fce3c9fdb66ddd8c445380352#egg=django_extensions-dev
+django-extensions==1.2.0
 gunicorn==0.17.2
 ipdb==0.7
 ipython==0.13.2
