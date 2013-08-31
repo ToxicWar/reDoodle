@@ -179,7 +179,7 @@
 
 {% block title %}{{ chain }}{% endblock %}
 
-{% block nav %}<a href="/">reDoodle</a> &rarr; <a href="{% url room room %}">{{ room }}</a> &rarr; <span>{{ chain }}</span>{% endblock %}
+{% block nav %}<a href="/">reDoodle</a> &rarr; <a href="{% url 'room' room %}">{{ room }}</a> &rarr; <span>{{ chain }}</span>{% endblock %}
 
 {% block section %}
     <h1>Добро пожаловать в цепочку {{ chain }} комнаты {{ room }}</h1>

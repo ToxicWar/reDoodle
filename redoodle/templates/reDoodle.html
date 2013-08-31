@@ -40,7 +40,10 @@
             </div>
             <div class="containerbody scroll-horizontal scroll">
                 <div class="chainline">
-                                <!--Тут могли быть ваши картинки-->
+                    <!--Тут могли быть ваши картинки-->
+                    {% for image in chain.image_set.all %}
+                        <img src="{{ image.image.url }}"/>
+                    {% endfor %}
                 </div>
             </div>
             <div class="chainbottom" id="changeview_1" onMouseOver>

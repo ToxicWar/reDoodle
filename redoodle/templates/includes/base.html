@@ -12,7 +12,7 @@
 <body>
     <div class="main">{{request.login_form}}
         {% if request.user.is_authenticated %}
-            {{ request.user.username }}, Welcome! Wanna some <a href="{% url logout %}">logout</a>
+            {{ request.user.username }}, Welcome! Wanna some <a href="{% url 'logout' %}">logout</a>
             {% if not request.user.email %}
                 <form method="POST" action="{% url 'mail_confirm' %}">
                     {% csrf_token %}
