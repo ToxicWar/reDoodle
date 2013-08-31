@@ -50,9 +50,10 @@
                             <p class="likes">{{ chain.likes }}<p>
                         </span>
                         <div class="like_box">
-                            <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
-                            <button class="like" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'True')">like</button>
-                            <button class="dislike" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'False')">unlike</button>
+                            {% if request.user.is_authenticated %}
+                                <button class="like" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'True')">like</button>
+                                <button class="dislike" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'False')">unlike</button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
