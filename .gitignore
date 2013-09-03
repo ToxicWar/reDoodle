@@ -2,3 +2,5 @@
 *.log
 *.pot
 *.pyc
+redoodle.db
+*~
