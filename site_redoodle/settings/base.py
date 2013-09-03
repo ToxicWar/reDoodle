@@ -48,3 +48,12 @@ INSTALLED_APPS = (
 
     'south',
 )
+
+AUTHENTICATION_BACKENDS = (
+    #'django.contrib.auth.backends.ModelBackend',
+    'auth.backends.LoginBackend',
+)
+
+#from django.core.urlresolvers import reverse_lazy
+LOGIN_URL = "/auth/login"
+

@@ -1,11 +1,9 @@
+# coding: utf-8
+from .forms import LoginForm, RegistrationForm
+
 def reg_forms(request):
-	login_form = "login form will be there"
-	reg_form = "registration form will be there"
-	print "hello from cp!"
-	if hasattr(request, 'login_form'):
-		print "lf found", request.login_form
-	else:
-		print "not found"
-	request.login_form = "login form from cp"
-	return {}
+	return {
+		'login_form': LoginForm(),
+		'reg_form': RegistrationForm()
+	}
 

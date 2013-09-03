@@ -1,22 +1,46 @@
 from django.template.response import TemplateResponse
 from django.template.loader import render_to_string
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login as auth_login
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
 from django.conf import settings
+from django.views.generic.edit import FormView
+from django.forms import ValidationError
 from django.core import validators
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse, reverse_lazy
+from .forms import LoginForm, RegistrationForm, EmailForm
 
 
-#TODO: move this to middleware
-def login(request):
-	return TemplateResponse(request, "login.html")
+class LoginView(FormView):
+	template_name = "login.html"
+	form_class = LoginForm
+	
+	def get_success_url(self):
+		if 'next' in self.request.GET:
+			return self.request.GET['next']
+		return reverse("index")
+	
+	def form_valid(self, form):
+		data = form.cleaned_data
+		auth_login(self.request, form.user)
+		return super(LoginView, self).form_valid(form)
+
 
 def logout(request):
 	auth_logout(request)
 	return redirect('index')
 
-def register(request):
-	return TemplateResponse(request, "register.html")
+class RegisterView(FormView):
+	template_name = "register.html"
+	form_class = RegistrationForm
+	success_url = reverse_lazy("index")
+	
+	def form_valid(self, form):
+		form.save()
+		return super(RegisterView, self).form_valid(form)
 
 
 #TODO: do something with HttpResponse'es
@@ -26,145 +50,42 @@ def register(request):
 # * POST - get email (if any), send code to email
 # * GET  - get code, compare, activate
 #confirmation code is stored in user's first name
-def mail_confirm_send(user):
+#new email is stored in user's last name
+def mail_confirm_send(user, email, request):
 	code = str(12345 + user.id)  #TODO: normal generation
+	url = "http://"+request.META['HTTP_HOST']+reverse("mail_confirm")
 	user.first_name = code
-	user.email_user("Wanna enlarge your... permissions?", "Message, code: "+code, settings.DEFAULT_FROM_EMAIL)
+	user.last_name = email
+	send_mail("Wanna enlarge your... permissions?",
+	          "Message, "+url+"?code="+code,
+	          settings.DEFAULT_FROM_EMAIL, [email])
 
+@login_required
 def mail_confirm_view(request):
 	user = request.user
 	#(1) mail sending phase
 	if request.POST:
 		#saving email
-		if 'email' in request.POST:
-			email = request.POST['email']
-			try:
-				validators.validate_email(email)
-			except ValidationError, e:
-				#TODO: do it NORMAL way (mb params to context, mb use messages)
-				return HttpResponse(e.messages[0])
-			user.email = email
-		
-		#sending code
-		if user.email:
-			mail_confirm_send(user)
+		form = EmailForm(request.POST)
+		if form.is_valid():
+			email = form.cleaned_data['email']
+			#sending code
+			mail_confirm_send(user, email, request)
 			user.save()
 			return HttpResponse("Code was sended. Check e-mail.")
 	#(2) mail confirmation phase
-	elif request.GET and 'code' in request.GET:
-		if request.GET['code'] == user.first_name:
+	else:
+		if 'code' in request.GET and request.GET['code'] == user.first_name:
 			user.is_active = True
-			user.first_name = ''
+			user.email = user.last_name
+			user.first_name = user.last_name = ''
 			user.save()
 			return HttpResponse("Activation complete!")
+		else:
+			init = {'email': user.email} if user.email else {}
+			form = EmailForm(initial=init)
 	
-	raise Http404
-
-
-
-#from django.template.response import TemplateResponse
-#from django.core.context_processors import csrf
-#from models import User
-#from django import forms
-#from django.core.validators import validate_email, RegexValidator, ValidationError
-#import re
-#from django.shortcuts import redirect
-#from django.utils.translation import ugettext_lazy as _
-#from django.forms.util import ErrorList
-#from django.http import Http404
-##from django.db.models import Q  # for complex queries
-
-## questions:
-## 1) SSL (full/only forms's POST)
-## 2) login user search: in form or function? and ok to pass it througt cleaned_data?
-
-
-#class RegForm(forms.ModelForm):
-#	#forms.PasswordInput(render_value=False)
-#	password = forms.CharField(label=_("Pass"), widget=forms.PasswordInput, min_length=5, max_length=255)
-#	password2 = forms.CharField(label=_("Moar pass"), widget=forms.PasswordInput, min_length=5, max_length=255)
-
-#	class Meta:
-#		model = User
-#		fields = ('name', 'mail')
-
-#	def clean(self):
-#		data = self.cleaned_data
-#		err = self._errors
-#		if 'name' not in err:
-#			if User.objects.filter(name=data['name']):
-#				err['name'] = ErrorList(["Name occupied"])
-#		if 'mail' not in err:
-#			if User.objects.filter(name=data['mail']):
-#				err['mail'] = ErrorList(["This mail already used"])
-#		if 'password' not in err and 'password2' not in err:
-#			if data['password'] != data['password2']:
-#				err['password'] = ErrorList(["Passwords must be equal"])
-#		return data
-
-#	def save(self, *args, **kwargs):
-#		self.instance.new_pass2hash(self.cleaned_data['password'])
-#		return super(RegForm, self).save(*args, **kwargs)
-
-
-#def index(request):
-#	if request.method == 'GET':
-#		form = RegForm()
-#	elif request.method == 'POST':
-#		form = RegForm(request.POST)
-#		if form.is_valid():
-#			request.session['user'] = form.save()
-#	else:
-#		raise Http404
-#	return TemplateResponse(request, 'index.html', {'form': form})
-
-
-#class LoginForm(forms.ModelForm):
-#	password = forms.CharField(label=_("Pass"), widget=forms.PasswordInput, min_length=5, max_length=255)
-
-#	class Meta:
-#		model = User
-#		fields = ('name',)
-
-#	def clean(self):
-#		data = self.cleaned_data
-
-#		if len(self._errors) > 0:
-#			return data
-
-#		try:
-#			user = User.objects.get(name=self.data['name'])
-#			print "searching for " + self.data['name']
-#			if user.check_pass(data['password']):
-#				data['user'] = user
-#				print user
-#				print "user"
-#			else:
-#				print "wrong pass"
-#				self._errors['password'] = ErrorList(["Wrong user's password"])
-#		except User.DoesNotExist:
-#			print "no such user"
-#			self._errors['name'] = ErrorList(["No such user"])
-
-#		return data
-
-
-#def login(request):
-#	if request.method == 'GET':
-#		form = LoginForm()
-#	elif request.method == 'POST':
-#		post = request.POST
-#		form = LoginForm(post)
-#		if form.is_valid():
-#			request.session['user'] = form.cleaned_data['user']
-#	else:
-#		raise Http404
-#	return TemplateResponse(request, 'login.html', {'form': form})
-
-
-#def logout(request):
-#	del request.session['user']
-#	return redirect('/')
+	return TemplateResponse(request, "mail_confirm.html", {'form': form})
 
 
 #"""unused down there"""
