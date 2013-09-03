@@ -1,0 +1,5 @@
+<form method="POST" action="{% url 'mail_confirm' %}">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="Eyup">
+</form>

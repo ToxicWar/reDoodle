@@ -67,6 +67,6 @@ class RegistrationForm(forms.Form):
 		user.save()
 
 
-#class EmailForm(forms.Form):
-#	email = forms.EmailField()
+class EmailForm(forms.Form):
+	email = forms.EmailField()
 

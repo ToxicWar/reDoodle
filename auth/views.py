@@ -9,8 +9,9 @@ from django.conf import settings
 from django.views.generic.edit import FormView
 from django.forms import ValidationError
 from django.core import validators
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, EmailForm
 
 
 class LoginView(FormView):
@@ -49,40 +50,42 @@ class RegisterView(FormView):
 # * POST - get email (if any), send code to email
 # * GET  - get code, compare, activate
 #confirmation code is stored in user's first name
+#new email is stored in user's last name
+def mail_confirm_send(user, email, request):
+	code = str(12345 + user.id)  #TODO: normal generation
+	url = "http://"+request.META['HTTP_HOST']+reverse("mail_confirm")
+	user.first_name = code
+	user.last_name = email
+	send_mail("Wanna enlarge your... permissions?",
+	          "Message, "+url+"?code="+code,
+	          settings.DEFAULT_FROM_EMAIL, [email])
+
 @login_required
 def mail_confirm_view(request):
 	user = request.user
 	#(1) mail sending phase
 	if request.POST:
 		#saving email
-		if 'email' in request.POST:
-			email = request.POST['email']
-			try:
-				validators.validate_email(email)
-			except ValidationError, e:
-				#TODO: do it NORMAL way (mb params to context, mb use messages)
-				return HttpResponse(e.messages[0])
-			user.email = email
-		
-		#sending code
-		if user.email:
-			code = str(12345 + user.id)  #TODO: normal generation
-			user.first_name = code
+		form = EmailForm(request.POST)
+		if form.is_valid():
+			email = form.cleaned_data['email']
+			#sending code
+			mail_confirm_send(user, email, request)
 			user.save()
-			user.email_user(
-				"Wanna enlarge your... permissions?",
-				"Message, http://"+request.META['HTTP_HOST']+reverse("mail_confirm")+"?code="+code,
-				settings.DEFAULT_FROM_EMAIL)
 			return HttpResponse("Code was sended. Check e-mail.")
 	#(2) mail confirmation phase
-	elif request.GET:
+	else:
 		if 'code' in request.GET and request.GET['code'] == user.first_name:
 			user.is_active = True
-			user.first_name = ''
+			user.email = user.last_name
+			user.first_name = user.last_name = ''
 			user.save()
 			return HttpResponse("Activation complete!")
+		else:
+			init = {'email': user.email} if user.email else {}
+			form = EmailForm(initial=init)
 	
-	raise Http404
+	return TemplateResponse(request, "mail_confirm.html", {'form': form})
 
 
 #"""unused down there"""

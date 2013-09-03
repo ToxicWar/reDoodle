@@ -14,7 +14,9 @@
         {% if request.user.is_authenticated %}
             {{ request.user.username }}, Welcome! Wanna some <a href="{% url 'logout' %}">logout</a>
             {% if request.user.email %}
-                {% if not request.user.is_active %}
+                {% if request.user.is_active %}
+                    (ur email: <b>{{ user.email }}</b>)
+                {% else %}
                     or proove your <a href="{% url 'mail_confirm' %}">email</a>
                 {% endif %}?
             {% else %}
