@@ -1,5 +1,5 @@
-<form method="POST" action="">
+<form method="POST" action="{% url 'login' %}">
 	{% csrf_token %}
-	{{ request.login_form.as_p }}
+	{{ form.as_p }}
 	<input type="submit" value="Go">
 </form>

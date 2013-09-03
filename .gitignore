@@ -2,3 +2,6 @@
 *.log
 *.pot
 *.pyc
+redoodle.db
+*~
+media/*
