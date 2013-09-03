@@ -1,0 +1,5 @@
+-r base.txt
+dj-database-url==0.2.1
+dj-static==0.0.5
+gunicorn==0.17.2
+static==0.4
