@@ -28,13 +28,16 @@ class Chain(models.Model):
         return self.name
 
     def like(self, user):
-        Like.objects.create(chain=self, user=user)
-        self.likes += 1
+        like, created = Like.objects.get_or_create(chain=self, user=user)
+        if created:
+            self.likes += 1
+            self.save()
 
     def dislike(self, user):
         user_like = Like.objects.get(chain=self, user=user)
         user_like.delete()
         self.likes -= 1
+        self.save()
 
 
 class Image(models.Model):

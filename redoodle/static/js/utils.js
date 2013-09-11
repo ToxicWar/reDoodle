@@ -50,7 +50,7 @@ function send_image(canvas, room, chain, url) {
 }
 
 function like(url, chain, like) {
-    like_class = '.'+chain+'_like_count';
+    like_class = '.'+chain+'_like_count .likes';
     $.ajax({
             type: "GET",
             url: url,

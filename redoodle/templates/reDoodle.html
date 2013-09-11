@@ -1,4 +1,4 @@
-{% extends "includes/base.html" %}
+{% extends "base.html" %}
 
 {% load static %}
 {% block style_and_script %}
@@ -12,7 +12,7 @@
     <div class="logo">
     </div>
     <div class="login" id="menubutton">
-        Какой сегодня день, Чуи?
+        Какой сегодня день, Усик?
     </div>
 {% endblock %}
 {% block menu %}
@@ -31,12 +31,9 @@
                     <span class="{{ chain.name }}_like_count">
                         <p class="likes">{{ chain.likes }}<p>
                     </span>
-                    <div class="like_box">
-                        {% if request.user.is_authenticated %}
-                            <button class="like" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'True')">like</button>
-                            <button class="dislike" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 'False')">unlike</button>
-                        {% endif %}
-                    </div>
+                    {% if request.user.is_authenticated %}
+                        {% include "includes/like_dislike.html" %}
+                    {% endif %}
                 </div>
             </div>
             <div class="containerbody scroll-horizontal scroll">

@@ -103,11 +103,10 @@ def like(request):
             like = request.GET['like']
             chain = Chain.objects.get(name=chain_name)
             user = request.user
-            if like == 'True':
+            if int(like):
                 chain.like(user)
             else:
                 chain.dislike(user)
-            chain.save()
             message = chain.likes
     else:
         return HttpResponse(status=403)
