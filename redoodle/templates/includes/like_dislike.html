@@ -1,8 +1,5 @@
 {# Display template like/dislike #}
 <div class="like_box">
-    <span class="{{ chain.name }}_like_count">{{ chain.likes }}</span>
-    <button class="like" 
-            onclick="like('{% url like-chain %}', '{{ chain.name }}', 'True')">like</button>
-    <button class="dislike" 
-            onclick="like('{% url like-chain %}', '{{ chain.name }}', 'False')">unlike</button>
+    <button class="like" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 1)">like</button>
+    <button class="dislike" onclick="like('{% url 'like-chain' %}', '{{ chain.name }}', 0)">unlike</button>
 </div>
