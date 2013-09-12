@@ -103,6 +103,8 @@ def like(request):
             like = request.GET['like']
             chain = Chain.objects.get(name=chain_name)
             user = request.user
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             if int(like):
                 chain.like(user)
             else:

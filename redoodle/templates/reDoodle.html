@@ -31,9 +31,7 @@
                     <span class="{{ chain.name }}_like_count">
                         <p class="likes">{{ chain.likes }}<p>
                     </span>
-                    {% if request.user.is_authenticated %}
-                        {% include "includes/like_dislike.html" %}
-                    {% endif %}
+                    {% include "includes/auth_like_dislike.html" %}
                 </div>
             </div>
             <div class="containerbody scroll-horizontal scroll">
