@@ -97,14 +97,14 @@ save_image = SaveImageView.as_view()
 
 
 def like(request):
+    if not request.user.is_authenticated():
+        return HttpResponse(status=403)
     if request.is_ajax():
         if request.method == 'GET':
             chain_name = request.GET['chain']
             like = request.GET['like']
             chain = Chain.objects.get(name=chain_name)
             user = request.user
-            if not user.is_authenticated():
-                return HttpResponse(status=403)
             if int(like):
                 chain.like(user)
             else:
