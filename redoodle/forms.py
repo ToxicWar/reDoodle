@@ -3,7 +3,6 @@ from django.core.files.base import ContentFile
 from django import forms
 from base64 import b64decode
 from redoodle.models import Chain, Image
-import os
 
 
 class AddRoomForm(forms.Form):

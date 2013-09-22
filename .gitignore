@@ -5,3 +5,4 @@
 redoodle.db
 *~
 media/*
+.coverage

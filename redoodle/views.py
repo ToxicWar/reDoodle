@@ -101,15 +101,22 @@ def like(request):
         return HttpResponse(status=403)
     if request.is_ajax():
         if request.method == 'GET':
-            chain_name = request.GET['chain']
-            like = request.GET['like']
+            chain_name = request.GET.get('chain', None)
+            like = request.GET.get('like', None)
+            if chain_name is None or like is None:
+                return HttpResponse(status=404)
             chain = Chain.objects.get(name=chain_name)
             user = request.user
-            if int(like):
-                chain.like(user)
-            else:
-                chain.dislike(user)
+            try:
+                if int(like):
+                    chain.like(user)
+                else:
+                    chain.dislike(user)
+            except ValueError as e:
+                return HttpResponse(status=404)
             message = chain.likes
+        else:
+            return HttpResponse(status=403)
     else:
         return HttpResponse(status=403)
     return HttpResponse(message)
