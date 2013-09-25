@@ -5,7 +5,6 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse_lazy
 from redoodle.models import Chain, Room
 from redoodle.forms import AddRoomForm, AddChainInRoom, SaveImage
-import os
 
 
 class IndexView(TemplateView):
@@ -42,8 +41,8 @@ class EditorView(TemplateView):
         context = super(EditorView, self).get_context_data(**kwargs)
         context['room'] = kwargs['room']
         context['chain'] = kwargs['chain']
-        room, r2 = Room.objects.get_or_create(name=kwargs['room'])
-        chain, r2 = Chain.objects.get_or_create(name=kwargs['chain'], room=room)
+        room, is_created = Room.objects.get_or_create(name=kwargs['room'])
+        chain, is_created = Chain.objects.get_or_create(name=kwargs['chain'], room=room)
         images = chain.image_set.order_by('-id')
         if images.count() != 0:
             context['image'] = images[0]
@@ -57,8 +56,7 @@ class AddRoomView(FormView):
 
     def form_valid(self, form):
         room_name = form.cleaned_data['room_name']
-        # r1 - object, r2 - created
-        r1, r2 = Room.objects.get_or_create(name=room_name)
+        room, is_created = Room.objects.get_or_create(name=room_name)
         self.success_url = reverse_lazy('room', kwargs={'room': room_name})
         return super(AddRoomView, self).form_valid(form)
 
@@ -75,7 +73,7 @@ class AddChainView(FormView):
         room_name = form.cleaned_data['room_name']
         chain_name = form.cleaned_data['chain_name']
         room = Room.objects.get(name=room_name)
-        r1, r2 = room.chain_set.get_or_create(name=chain_name)
+        chain, is_created = room.chain_set.get_or_create(name=chain_name)
         self.success_url = reverse_lazy('editor', kwargs={'room': room_name, 'chain': chain_name})
         return super(AddChainView, self).form_valid(form)
 
@@ -104,16 +102,16 @@ def like(request):
             chain_name = request.GET.get('chain', None)
             like = request.GET.get('like', None)
             if chain_name is None or like is None:
-                return HttpResponse(status=404)
-            chain = Chain.objects.get(name=chain_name)
-            user = request.user
+                return HttpResponse(status=403)
             try:
-                if int(like):
-                    chain.like(user)
-                else:
-                    chain.dislike(user)
-            except ValueError as e:
-                return HttpResponse(status=404)
+                chain = Chain.objects.get(name=chain_name)
+            except Chain.DoesNotExist as e:
+                return HttpResponse(e.message, status=400)
+            user = request.user
+            if like == '1':
+                chain.like(user)
+            else:
+                chain.dislike(user)
             message = chain.likes
         else:
             return HttpResponse(status=403)
