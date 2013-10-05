@@ -1,4 +1,5 @@
 from .base import *
+from .mail import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -12,3 +13,6 @@ DATABASES = {
 		'NAME': 'redoodle.db',
 	}
 }
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+

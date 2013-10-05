@@ -1,3 +1,4 @@
+#coding: utf-8
 from django.template.response import TemplateResponse
 from django.template.loader import render_to_string
 from django.contrib.auth import logout as auth_logout
@@ -12,7 +13,8 @@ from django.core import validators
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from .forms import LoginForm, RegistrationForm, EmailForm
-
+from random import randint
+from hashlib import md5
 
 class LoginView(FormView):
 	template_name = "login.html"
@@ -40,6 +42,10 @@ class RegisterView(FormView):
 	
 	def form_valid(self, form):
 		form.save()
+#		if 'email' in form.cleaned_data:
+#			mail_confirm_send(form.user,
+#			                  form.cleaned_data['email'],
+#			                  self.request.META['HTTP_HOST'])
 		return super(RegisterView, self).form_valid(form)
 
 
@@ -51,14 +57,16 @@ class RegisterView(FormView):
 # * GET  - get code, compare, activate
 #confirmation code is stored in user's first name
 #new email is stored in user's last name
-def mail_confirm_send(user, email, request):
-	code = str(12345 + user.id)  #TODO: normal generation
-	url = "http://"+request.META['HTTP_HOST']+reverse("mail_confirm")
+def mail_confirm_send(user, email, site_host):
+	code = md5(str(randint(0,65536) + user.id)).hexdigest()[:-2] # потому что 32 и не влезает
+	url = "http://"+site_host+reverse("mail_confirm")
 	user.first_name = code
 	user.last_name = email
 	send_mail("Wanna enlarge your... permissions?",
 	          "Message, "+url+"?code="+code,
-	          settings.DEFAULT_FROM_EMAIL, [email])
+	          settings.EMAIL_HOST_USER, [email])
+	user.save()
+	print code, user.first_name
 
 @login_required
 def mail_confirm_view(request):
@@ -70,7 +78,7 @@ def mail_confirm_view(request):
 		if form.is_valid():
 			email = form.cleaned_data['email']
 			#sending code
-			mail_confirm_send(user, email, request)
+			mail_confirm_send(user, email, request.META['HTTP_HOST'])
 			user.save()
 			return HttpResponse("Code was sended. Check e-mail.")
 	#(2) mail confirmation phase

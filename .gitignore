@@ -6,3 +6,4 @@ redoodle.db
 *~
 media/*
 .coverage
+site_redoodle/settings/mail.py
