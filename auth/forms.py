@@ -52,11 +52,19 @@ class RegistrationForm(forms.Form):
 			return self.cleaned_data
 		
 		data = self.cleaned_data
+		
 		try:
 			user = User.objects.get(username=data['username'])
-			self._errors['username'] = ErrorList(["User already exists"])
+			self._errors['username'] = ErrorList([u'Имя занято'])
 		except User.DoesNotExist:
 			pass
+		
+		try:
+			user = User.objects.get(email=data['email'])
+			self._errors['email'] = ErrorList([u'Почта занята'])
+		except User.DoesNotExist:
+			pass
+		
 		return data
 	
 	def save(self):

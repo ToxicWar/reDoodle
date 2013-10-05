@@ -34,19 +34,20 @@ class SimpleTest(TestCase):
 		self.assertTrue(resp.context['form']['username'].errors)
 		self.assertFalse(resp.context['form']['email'].errors)
 		
-		#coming soon
 		#почта занята
-#		resp = self.client.post(reverse('register'), data={
-#			'username': "othername",
-#			'email': "some@mail.com",
-#			'password': "somepass"})
-#		self.assertFalse(resp.context['form']['username'].errors)
-#		self.assertTrue(resp.context['form']['email'].errors)
+		resp = self.client.post(reverse('register'), data={
+			'username': "othername",
+			'email': "some@mail.com",
+			'password': "somepass"})
+		self.assertFalse(resp.context['form']['username'].errors)
+		self.assertTrue(resp.context['form']['email'].errors)
 		
+		#почта юзера не пруфнута
 		user = User.objects.get(email="some@mail.com")
-		self.failIf(user.is_active, u'почта юзера не пруфнута')
+		self.failIf(user.is_active)
 		
-		self.assertEqual(len(mail.outbox), 0, u'на почте пока пусто')
+		#на почте пока пусто
+		self.assertEqual(len(mail.outbox), 0)
 		
 		#TODO: mail proof
 		
