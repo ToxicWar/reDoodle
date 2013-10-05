@@ -18,7 +18,7 @@ class SimpleTest(TestCase):
 		self.assertTemplateUsed(resp, 'register.html')
 		self.failUnless(isinstance(resp.context['reg_form'], RegistrationForm))
 	
-	def test_registration(self):
+	def test_registr_and_login(self):
 		#просто регистрируемся
 		resp = self.client.post(reverse('register'), data={
 			'username': "somename",
@@ -46,10 +46,6 @@ class SimpleTest(TestCase):
 		user = User.objects.get(email="some@mail.com")
 		self.failIf(user.is_active)
 		
-		#на почте пока пусто
-		self.assertEqual(len(mail.outbox), 0)
-		
-		#TODO: mail proof
 		
 		#ещё не залогинены
 		self.assertTrue(SESSION_KEY not in self.client.session)
@@ -74,6 +70,25 @@ class SimpleTest(TestCase):
 			'password': "somepass"})
 		self.assertRedirects(resp, reverse('index'))
 		self.assertTrue(SESSION_KEY in self.client.session)
+		
+		
+		#автоматически вписывается почта юзера
+		resp = self.client.get(reverse('mail_confirm'))
+		self.assertEqual(resp.context['form']['email'].value(), user.email)
+		
+		#на почте пока пусто
+		self.assertEqual(len(mail.outbox), 0)
+		
+		#подтверждаем
+		resp = self.client.post(reverse('mail_confirm'), data={
+			'email': "other@mail.com"}, HTTP_HOST='example.com')
+		
+		#а вот и письмо
+		self.assertEqual(len(mail.outbox), 1)
+		message = str(mail.outbox[0].message())
+		saved_code = user.first_name
+		self.assertNotEqual(message.find(saved_code), -1)
+		
 		
 		#разлогинка
 		resp = self.client.get(reverse('logout'))
