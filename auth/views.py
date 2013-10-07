@@ -42,10 +42,11 @@ class RegisterView(FormView):
 	
 	def form_valid(self, form):
 		form.save()
-#		if 'email' in form.cleaned_data:
-#			mail_confirm_send(form.user,
-#			                  form.cleaned_data['email'],
-#			                  self.request.META['HTTP_HOST'])
+		# коли дали мыло, проверяем сразу
+		if 'email' in form.cleaned_data and form.cleaned_data['email']:
+			mail_confirm_send(form.user,
+			                  form.cleaned_data['email'],
+			                  self.request.META['HTTP_HOST'])
 		return super(RegisterView, self).form_valid(form)
 
 

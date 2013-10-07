@@ -73,7 +73,7 @@ class RegistrationForm(forms.Form):
 		                                data['email'], data['password'])
 		user.is_active = False
 		user.save()
-		#self.user = user # надо вьюхе для отправки почты
+		self.user = user # надо вьюхе для отправки почты
 
 
 class EmailForm(forms.Form):
