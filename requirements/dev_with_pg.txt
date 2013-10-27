@@ -1,0 +1,2 @@
+-r dev_base.txt
+psycopg2==2.5
