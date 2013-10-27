@@ -4,31 +4,51 @@ from redoodle.models import Room, Chain, Image
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 
-class RoomSerializer(ModelSerializer):
-    class Meta:
-        model = Room
-        fields = ('name')
-
-
 class ImageSerializer(ModelSerializer):
     image = SerializerMethodField('get_image')
 
     class Meta:
         model = Image
-        fields = ('id', 'image', 'ban')
+        fields = ('id', 'image')
 
     def get_image(self, obj):
         image_url = 'http://{0}{1}'.format(Site.objects.get_current().domain, obj.image.url)
         return image_url
 
 
-class ChainSerializer(ModelSerializer):
+class ChainListSerializer(ModelSerializer):
     room = SerializerMethodField('get_room')
     image_set = ImageSerializer(many=True)
 
     class Meta:
         model = Chain
-        fields = ('id', 'name', 'likes', 'is_blocked', 'room', 'image_set')
+        fields = ('id', 'name', 'likes', 'room', 'image_set', 'is_blocked')
 
     def get_room(self, obj):
         return obj.room.name
+
+
+class ChainDetailSerializer(ModelSerializer):
+    room = SerializerMethodField('get_room')
+    image_set = ImageSerializer(many=True)
+
+    class Meta:
+        model = Chain
+        fields = ('id', 'name', 'likes', 'image_set', 'is_blocked')
+
+    def get_room(self, obj):
+        return obj.room.name
+
+
+class RoomListSerializer(ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('id', 'name')
+
+
+class RoomDetailSerializer(ModelSerializer):
+    chain_set = ChainDetailSerializer(many=True)
+
+    class Meta:
+        model = Room
+        fields = ('id', 'name', 'chain_set')
