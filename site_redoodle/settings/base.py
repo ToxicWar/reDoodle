@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'redoodle',
     'auth',
 
+    'rest_framework',
     'south',
 )
 
@@ -53,6 +54,12 @@ AUTHENTICATION_BACKENDS = (
     #'django.contrib.auth.backends.ModelBackend',
     'auth.backends.LoginBackend',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 #from django.core.urlresolvers import reverse_lazy
 LOGIN_URL = "/auth/login"
