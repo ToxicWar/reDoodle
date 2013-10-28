@@ -1,4 +1,17 @@
 # coding: utf-8
+try:
+    from .mail import *
+except ImportError:
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        'I need a POP3 server config for sending emails, '+
+        'so please create a mail.py file with something like:\n'+
+        '  EMAIL_HOST = \'smtp.yandex.ru\'\n'+
+        '  EMAIL_HOST_USER = \'TheGreatAndPowerfulTrixie@yandex.ru\'\n'+
+        '  EMAIL_HOST_PASSWORD = \'password\'\n'+
+        '  EMAIL_PORT = 587\n'+
+        '  EMAIL_USE_TLS = True')
+
 TIME_ZONE = 'Europe/Moscow'
 LANGUAGE_CODE = 'en'
 SITE_ID = 1
