@@ -86,8 +86,9 @@ send.onclick = function() {
 	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState != 4) return;
-		console.log(xhr.responseText);
+		obj = JSON.parse(xhr.responseText);
 		result.value = xhr.responseText;
+		console.log(obj);
 		cookie_backet.value = document.cookie;//.split(";").join("\n")
 	}
 	xhr.send(data.value);
