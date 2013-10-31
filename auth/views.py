@@ -8,46 +8,64 @@ from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
 from django.conf import settings
 from django.views.generic.edit import FormView
-from django.forms import ValidationError
+#from django.forms import ValidationError
 from django.core import validators
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from .forms import LoginForm, RegistrationForm, EmailForm
 from random import randint
 from hashlib import md5
+import json
 
-class LoginView(FormView):
-	template_name = "login.html"
-	form_class = LoginForm
+
+# json.dumps(data)
+def login_view(request):
+	if request.method != 'POST':
+		raise Http404
 	
-	def get_success_url(self):
-		if 'next' in self.request.GET:
-			return self.request.GET['next']
-		return reverse("index")
+	form = LoginForm(request.POST)
+	if form.is_valid():
+		auth_login(request, form.user)
+		return HttpResponse('{"result": "ok"}', content_type="application/json")
 	
-	def form_valid(self, form):
-		data = form.cleaned_data
-		auth_login(self.request, form.user)
-		return super(LoginView, self).form_valid(form)
+	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}', content_type="application/json")
 
 
 def logout(request):
 	auth_logout(request)
-	return redirect('index')
+	return HttpResponse('{"result": "ok"}', content_type="application/json")
 
-class RegisterView(FormView):
-	template_name = "register.html"
-	form_class = RegistrationForm
-	success_url = reverse_lazy("index")
+
+def register_view(request):
+	if request.method != 'POST':
+		raise Http404
 	
-	def form_valid(self, form):
+	form = RegistrationForm(request.POST)
+	if form.is_valid():
 		form.save()
 		# коли дали мыло, проверяем сразу
-		if 'email' in form.cleaned_data and form.cleaned_data['email']:
+		if form.cleaned_data['email']: # 'email' in form.cleaned_data
 			mail_confirm_send(form.user,
 			                  form.cleaned_data['email'],
-			                  self.request.META['HTTP_HOST'])
-		return super(RegisterView, self).form_valid(form)
+			                  request.META['HTTP_HOST'])
+		return HttpResponse('{"result": "ok"}', content_type="application/json")
+	
+	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}', content_type="application/json")
+
+
+#class RegisterView(FormView):
+#	template_name = "register.html"
+#	form_class = RegistrationForm
+#	success_url = reverse_lazy("index")
+#	
+#	def form_valid(self, form):
+#		form.save()
+#		# коли дали мыло, проверяем сразу
+#		if 'email' in form.cleaned_data and form.cleaned_data['email']:
+#			mail_confirm_send(form.user,
+#			                  form.cleaned_data['email'],
+#			                  self.request.META['HTTP_HOST'])
+#		return super(RegisterView, self).form_valid(form)
 
 
 #TODO: do something with HttpResponse'es
