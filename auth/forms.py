@@ -53,11 +53,12 @@ class RegistrationForm(forms.Form):
 		except User.DoesNotExist:
 			pass
 		
-		try:
-			user = User.objects.get(email=data['email'])
-			self._errors['email'] = ErrorList([u'Почта занята'])
-		except User.DoesNotExist:
-			pass
+		if data['email']:
+			try:
+				user = User.objects.get(email=data['email'])
+				self._errors['email'] = ErrorList([u'Почта занята'])
+			except User.DoesNotExist:
+				pass
 		
 		return data
 	

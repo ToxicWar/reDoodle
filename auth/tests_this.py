@@ -60,6 +60,11 @@ class SimpleTest(TestCase):
 		resp = self.register("somename", None, "somepass")
 		#мыло-не мыло, а пользователь должен создаться
 		User.objects.get(username="somename")
+		
+		#была бага: второй юзер с пустой почтой не мог создаться,
+		#потому что эта (пустая) почта уже занята
+		resp = self.register("othername", None, "somepass")
+		User.objects.get(username="othername")
 	
 	def test_login(self):
 		self.register("somename", "some@mail.com", "somepass")
