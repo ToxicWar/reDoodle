@@ -36,17 +36,19 @@ class SimpleTest(TestCase):
 	def test_registration(self):
 		#просто регистрируемся
 		resp = self.register("somename", "some@mail.com", "somepass")
-		self.assertJSONEqual(resp.content, '{"result": "ok"}')
+		self.assertEqual(resp.status_code, 200)
 		User.objects.get(username="somename")
 		
 		#имя занято
 		resp = self.register("somename", "other@mail.com", "somepass")
+		self.assertEqual(resp.status_code, 400)
 		err = json.loads(resp.content)['errors']
 		self.assertTrue('username' in err)
 		self.assertFalse('password' in err)
 		
 		#почта занята
 		resp = self.register("othername", "some@mail.com", "somepass")
+		self.assertEqual(resp.status_code, 400)
 		err = json.loads(resp.content)['errors']
 		self.assertFalse('username' in err)
 		self.assertTrue('email' in err)
@@ -58,12 +60,14 @@ class SimpleTest(TestCase):
 	
 	def test_registration_without_mail(self):
 		resp = self.register("somename", None, "somepass")
+		self.assertEqual(resp.status_code, 200)
 		#мыло-не мыло, а пользователь должен создаться
 		User.objects.get(username="somename")
 		
 		#была бага: второй юзер с пустой почтой не мог создаться,
 		#потому что эта (пустая) почта уже занята
 		resp = self.register("othername", None, "somepass")
+		self.assertEqual(resp.status_code, 200)
 		User.objects.get(username="othername")
 	
 	def test_login(self):
@@ -74,19 +78,21 @@ class SimpleTest(TestCase):
 		
 		#неправильное имя
 		resp = self.login("othername", "somepass")
+		self.assertEqual(resp.status_code, 400)
 		err = json.loads(resp.content)['errors']
 		self.assertTrue('username' in err)
 		self.assertTrue(SESSION_KEY not in self.client.session)
 		
 		#неправильнный пароль
 		resp = self.login("somename", "otherpass")
+		self.assertEqual(resp.status_code, 400)
 		err = json.loads(resp.content)['errors']
 		self.assertTrue('password' in err)
 		self.assertTrue(SESSION_KEY not in self.client.session)
 		
 		#всё ок
 		resp = self.login("somename", "somepass")
-		self.assertJSONEqual(resp.content, '{"result": "ok"}')
+		self.assertEqual(resp.status_code, 200)
 		self.assertTrue(SESSION_KEY in self.client.session)
 	
 	"""def test_mail_confirm_when_register_with_mail(self):

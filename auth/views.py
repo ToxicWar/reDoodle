@@ -26,14 +26,15 @@ def login_view(request):
 	form = LoginForm(request.POST)
 	if form.is_valid():
 		auth_login(request, form.user)
-		return HttpResponse('{"result": "ok"}', content_type="application/json")
+		return HttpResponse('', content_type="application/json", status=200)
 	
-	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}', content_type="application/json")
+	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}',
+		content_type="application/json", status=400)
 
 
 def logout(request):
 	auth_logout(request)
-	return HttpResponse('{"result": "ok"}', content_type="application/json")
+	return HttpResponse(content_type="application/json", status=200)
 
 
 def register_view(request):
@@ -48,24 +49,10 @@ def register_view(request):
 			mail_confirm_send(form.user,
 			                  form.cleaned_data['email'],
 			                  request.META['HTTP_HOST'])
-		return HttpResponse('{"result": "ok"}', content_type="application/json")
+		return HttpResponse(content_type="application/json", status=200)
 	
-	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}', content_type="application/json")
-
-
-#class RegisterView(FormView):
-#	template_name = "register.html"
-#	form_class = RegistrationForm
-#	success_url = reverse_lazy("index")
-#	
-#	def form_valid(self, form):
-#		form.save()
-#		# коли дали мыло, проверяем сразу
-#		if 'email' in form.cleaned_data and form.cleaned_data['email']:
-#			mail_confirm_send(form.user,
-#			                  form.cleaned_data['email'],
-#			                  self.request.META['HTTP_HOST'])
-#		return super(RegisterView, self).form_valid(form)
+	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}',
+		content_type="application/json", status=400)
 
 
 #TODO: do something with HttpResponse'es
