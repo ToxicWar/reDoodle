@@ -44,7 +44,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
-    'auth.context_processors.reg_forms'
 )
 
 INSTALLED_APPS = (

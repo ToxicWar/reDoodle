@@ -22,6 +22,30 @@ class SimpleTest(TestCase):
 			'username': name,
 			'password': passwd}, HTTP_HOST='testserver')
 	
+	def logout(self):
+		return self.client.get(reverse('logout'))
+	
+	def check_mail_and_prove_url_and_check_if_active(self, user, password):
+		#письмо на почте
+		self.assertEqual(len(mail.outbox), 1)
+		message = str(mail.outbox[0].message())
+		saved_code = user.first_name
+		code_start_pos = message.find(saved_code)
+		self.assertNotEqual(code_start_pos, -1, "code should have been sended")
+		url_start_pos = message[:code_start_pos].rfind("http://")
+		url = message[url_start_pos : code_start_pos+len(saved_code)]
+		
+		#подтверждаем, не залогинившись
+		resp = self.client.get(url)
+		self.assertEqual(resp.status_code, 302)
+		self.assertFalse(User.objects.get(username=user.username).is_active)
+		#залогинившись
+		self.login(user.username, password)
+		resp = self.client.get(url)
+		self.assertEqual(resp.status_code, 200)
+		self.assertTrue(User.objects.get(username=user.username).is_active)
+	
+	
 	def test_2x2(self):
 		self.assertEqual(2*2, 4, "2x2=4")
 	
@@ -95,49 +119,45 @@ class SimpleTest(TestCase):
 		self.assertEqual(resp.status_code, 200)
 		self.assertTrue(SESSION_KEY in self.client.session)
 	
-	"""def test_mail_confirm_when_register_with_mail(self):
+	def test_mail_confirm_when_register_with_mail(self):
 		self.register("somename", "some@mail.com", "somepass")
 		user = User.objects.get(username="somename")
-		self.client.get(reverse('login')) # тут установится тестовая кука
-		self.login("somename", "somepass")
+		self.assertFalse(user.is_active)
 		
-		#в подтверждалку автоматически вписывается почта юзера
-		resp = self.client.get(reverse('mail_confirm'))
-		print resp
-		self.assertEqual(resp.context['form']['email'].value(), user.email)
-		
-		#письмо на почту уже отправлено
-		self.assertEqual(len(mail.outbox), 1)
-		message = str(mail.outbox[0].message())
-		saved_code = user.first_name
-		self.assertNotEqual(message.find(saved_code), -1)
+		self.check_mail_and_prove_url_and_check_if_active(user, "somepass")
 	
 	def test_mail_confirm_when_register_without_mail(self):
 		self.register("somename", None, "somepass")
-		user = User.objects.get(username="somename")
-		self.client.get(reverse('login')) # тут установится тестовая кука
-		self.login("somename", "somepass")
 		
 		#на почте пока пусто
 		self.assertEqual(len(mail.outbox), 0)
 		
-		#подтверждаем
-		resp = self.client.post(reverse('mail_confirm'), data={
-			'email': "zblzlo4ui@yandex.ru"}, HTTP_HOST='testserver')
+		#отправляем
+		def send_mail():
+			return self.client.post(reverse('mail_confirm'), data={
+				'email': "zblzlo4ui@yandex.ru"}, HTTP_HOST='testserver')
+		#не залогинившись
+		resp = send_mail()
+		self.assertEqual(resp.status_code, 302)
+		#залогинившись
+		self.login("somename", "somepass")
+		resp = send_mail()
+		self.assertEqual(resp.status_code, 200)
 		
-		#а вот и письмо
-		self.assertEqual(len(mail.outbox), 1)
-		message = str(mail.outbox[0].message())
-		saved_code = user.first_name
-		self.assertNotEqual(message.find(saved_code), -1)
+		user = User.objects.get(username="somename")
+		self.assertFalse(user.is_active)
+		self.logout()
+		
+		self.check_mail_and_prove_url_and_check_if_active(user, "somepass")
 	
 	def test_logout(self):
 		self.register("somename", "some@mail.com", "somepass")
 		self.login("somename", "somepass")
 		
 		#разлогинка
-		resp = self.client.get(reverse('logout'))
-		self.assertTrue(SESSION_KEY not in self.client.session)"""
+		resp = self.logout()
+		self.assertEqual(resp.status_code, 200)
+		self.assertTrue(SESSION_KEY not in self.client.session)
 
 
 

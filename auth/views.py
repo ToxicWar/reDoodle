@@ -18,6 +18,18 @@ from hashlib import md5
 import json
 
 
+def JSONResponse(string, status):
+	return HttpResponse(string,
+		content_type="application/json", status=status)
+
+def JSONDumpsResponse(data, status):
+	return HttpResponse(json.dumps(data),
+		content_type="application/json", status=status)
+
+def JSONErrorResponse(errors, status):
+	return HttpResponse('{"errors": '+json.dumps(errors)+'}',
+		content_type="application/json", status=status)
+
 # json.dumps(data)
 def login_view(request):
 	if request.method != 'POST':
@@ -26,15 +38,14 @@ def login_view(request):
 	form = LoginForm(request.POST)
 	if form.is_valid():
 		auth_login(request, form.user)
-		return HttpResponse('', content_type="application/json", status=200)
+		return JSONResponse('', 200)
 	
-	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}',
-		content_type="application/json", status=400)
+	return JSONErrorResponse(form._errors, status=400)
 
 
 def logout(request):
 	auth_logout(request)
-	return HttpResponse(content_type="application/json", status=200)
+	return JSONResponse('', 200)
 
 
 def register_view(request):
@@ -49,17 +60,16 @@ def register_view(request):
 			mail_confirm_send(form.user,
 			                  form.cleaned_data['email'],
 			                  request.META['HTTP_HOST'])
-		return HttpResponse(content_type="application/json", status=200)
+		return JSONResponse('', 200)
 	
-	return HttpResponse('{"errors": '+json.dumps(form._errors)+'}',
-		content_type="application/json", status=400)
+	return JSONErrorResponse(form._errors, status=400)
 
 
 #TODO: do something with HttpResponse'es
 #TODO: mb use render_to_string(file, context)
 #mail server: python -m smtpd -n -c DebuggingServer localhost:1025
 #steps:
-# * POST - get email (if any), send code to email
+# * POST - receive email, send code to email
 # * GET  - get code, compare, activate
 #confirmation code is stored in user's first name
 #new email is stored in user's last name
@@ -72,7 +82,6 @@ def mail_confirm_send(user, email, site_host):
 	          "Message, "+url+"?code="+code,
 	          settings.EMAIL_HOST_USER, [email])
 	user.save()
-	print code, user.first_name
 
 @login_required
 def mail_confirm_view(request):
@@ -86,7 +95,8 @@ def mail_confirm_view(request):
 			#sending code
 			mail_confirm_send(user, email, request.META['HTTP_HOST'])
 			user.save()
-			return HttpResponse("Code was sended. Check e-mail.")
+			return JSONResponse('', 200) # Code was sended. Check e-mail.
+		return JSONErrorResponse(form._errors, status=400)
 	#(2) mail confirmation phase
 	else:
 		if 'code' in request.GET and request.GET['code'] == user.first_name:
@@ -95,11 +105,7 @@ def mail_confirm_view(request):
 			user.first_name = user.last_name = ''
 			user.save()
 			return HttpResponse("Activation complete!")
-		else:
-			init = {'email': user.email} if user.email else {}
-			form = EmailForm(initial=init)
-	
-	return TemplateResponse(request, "mail_confirm.html", {'form': form})
+		raise Http404
 
 
 #"""unused down there"""
