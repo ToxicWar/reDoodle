@@ -4,3 +4,7 @@
 *.pyc
 redoodle.db
 *~
+media/*
+.coverage
+site_redoodle/settings/mail.py
+Django-1.5.5*

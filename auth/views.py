@@ -1,3 +1,4 @@
+#coding: utf-8
 from django.template.response import TemplateResponse
 from django.template.loader import render_to_string
 from django.contrib.auth import logout as auth_logout
@@ -7,58 +8,80 @@ from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
 from django.conf import settings
 from django.views.generic.edit import FormView
-from django.forms import ValidationError
+#from django.forms import ValidationError
 from django.core import validators
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 from .forms import LoginForm, RegistrationForm, EmailForm
+from random import randint
+from hashlib import md5
+import json
 
 
-class LoginView(FormView):
-	template_name = "login.html"
-	form_class = LoginForm
+def JSONResponse(string, status):
+	return HttpResponse(string,
+		content_type="application/json", status=status)
+
+def JSONDumpsResponse(data, status):
+	return HttpResponse(json.dumps(data),
+		content_type="application/json", status=status)
+
+def JSONErrorResponse(errors, status):
+	return HttpResponse('{"errors": '+json.dumps(errors)+'}',
+		content_type="application/json", status=status)
+
+# json.dumps(data)
+def login_view(request):
+	if request.method != 'POST':
+		raise Http404
 	
-	def get_success_url(self):
-		if 'next' in self.request.GET:
-			return self.request.GET['next']
-		return reverse("index")
+	form = LoginForm(request.POST)
+	if form.is_valid():
+		auth_login(request, form.user)
+		return JSONResponse('', 200)
 	
-	def form_valid(self, form):
-		data = form.cleaned_data
-		auth_login(self.request, form.user)
-		return super(LoginView, self).form_valid(form)
+	return JSONErrorResponse(form._errors, status=400)
 
 
 def logout(request):
 	auth_logout(request)
-	return redirect('index')
+	return JSONResponse('', 200)
 
-class RegisterView(FormView):
-	template_name = "register.html"
-	form_class = RegistrationForm
-	success_url = reverse_lazy("index")
+
+def register_view(request):
+	if request.method != 'POST':
+		raise Http404
 	
-	def form_valid(self, form):
+	form = RegistrationForm(request.POST)
+	if form.is_valid():
 		form.save()
-		return super(RegisterView, self).form_valid(form)
+		# коли дали мыло, проверяем сразу
+		if form.cleaned_data['email']: # 'email' in form.cleaned_data
+			mail_confirm_send(form.user,
+			                  form.cleaned_data['email'],
+			                  request.META['HTTP_HOST'])
+		return JSONResponse('', 200)
+	
+	return JSONErrorResponse(form._errors, status=400)
 
 
 #TODO: do something with HttpResponse'es
 #TODO: mb use render_to_string(file, context)
 #mail server: python -m smtpd -n -c DebuggingServer localhost:1025
 #steps:
-# * POST - get email (if any), send code to email
+# * POST - receive email, send code to email
 # * GET  - get code, compare, activate
 #confirmation code is stored in user's first name
 #new email is stored in user's last name
-def mail_confirm_send(user, email, request):
-	code = str(12345 + user.id)  #TODO: normal generation
-	url = "http://"+request.META['HTTP_HOST']+reverse("mail_confirm")
+def mail_confirm_send(user, email, site_host):
+	code = md5(str(randint(0,65536) + user.id)).hexdigest()[:-2] # потому что 32 и не влезает
+	url = "http://"+site_host+reverse("mail_confirm")
 	user.first_name = code
 	user.last_name = email
 	send_mail("Wanna enlarge your... permissions?",
 	          "Message, "+url+"?code="+code,
-	          settings.DEFAULT_FROM_EMAIL, [email])
+	          settings.EMAIL_HOST_USER, [email])
+	user.save()
 
 @login_required
 def mail_confirm_view(request):
@@ -70,9 +93,10 @@ def mail_confirm_view(request):
 		if form.is_valid():
 			email = form.cleaned_data['email']
 			#sending code
-			mail_confirm_send(user, email, request)
+			mail_confirm_send(user, email, request.META['HTTP_HOST'])
 			user.save()
-			return HttpResponse("Code was sended. Check e-mail.")
+			return JSONResponse('', 200) # Code was sended. Check e-mail.
+		return JSONErrorResponse(form._errors, status=400)
 	#(2) mail confirmation phase
 	else:
 		if 'code' in request.GET and request.GET['code'] == user.first_name:
@@ -81,11 +105,7 @@ def mail_confirm_view(request):
 			user.first_name = user.last_name = ''
 			user.save()
 			return HttpResponse("Activation complete!")
-		else:
-			init = {'email': user.email} if user.email else {}
-			form = EmailForm(initial=init)
-	
-	return TemplateResponse(request, "mail_confirm.html", {'form': form})
+		raise Http404
 
 
 #"""unused down there"""

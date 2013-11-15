@@ -1,4 +1,17 @@
 # coding: utf-8
+try:
+    from .mail import *
+except ImportError:
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        'I need a POP3 server config for sending emails, '+
+        'so please create a mail.py file with something like:\n'+
+        '  EMAIL_HOST = \'smtp.yandex.ru\'\n'+
+        '  EMAIL_HOST_USER = \'TheGreatAndPowerfulTrixie@yandex.ru\'\n'+
+        '  EMAIL_HOST_PASSWORD = \'password\'\n'+
+        '  EMAIL_PORT = 587\n'+
+        '  EMAIL_USE_TLS = True')
+
 TIME_ZONE = 'Europe/Moscow'
 LANGUAGE_CODE = 'en'
 SITE_ID = 1
@@ -11,7 +24,7 @@ STATIC_URL = '/static/'
 SECRET_KEY = 'yy3d&amp;rmb$g$8ucut=9(@g=qi2%*ro552^7$xzddj_wif_0f)sg'
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -30,7 +43,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
-    'auth.context_processors.reg_forms'
 )
 
 INSTALLED_APPS = (
@@ -45,6 +57,7 @@ INSTALLED_APPS = (
     'redoodle',
     'auth',
 
+    'rest_framework',
     'south',
 )
 
@@ -52,6 +65,12 @@ AUTHENTICATION_BACKENDS = (
     #'django.contrib.auth.backends.ModelBackend',
     'auth.backends.LoginBackend',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 #from django.core.urlresolvers import reverse_lazy
 LOGIN_URL = "/auth/login"
