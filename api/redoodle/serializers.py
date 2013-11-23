@@ -1,7 +1,7 @@
 # coding: utf-8
 from django.contrib.sites.models import Site
 from redoodle.models import Room, Chain, Image
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import ModelSerializer, SerializerMethodField, CharField, Serializer
 
 
 class ImageSerializer(ModelSerializer):
@@ -26,6 +26,11 @@ class ChainListSerializer(ModelSerializer):
 
     def get_room(self, obj):
         return obj.room.name
+
+
+class ChainCreateSerializer(Serializer):
+    name = CharField(max_length=255)
+    room = CharField(max_length=255)
 
 
 class ChainDetailSerializer(ModelSerializer):
