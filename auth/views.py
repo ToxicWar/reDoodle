@@ -48,6 +48,18 @@ def logout(request):
 	return JSONResponse('', 200)
 
 
+#не обращать внимания на это О_о, оно для экспериметов с API
+from django.contrib.auth.models import User
+def rmf(request):
+	if 'username' not in request.POST:
+		return JSONErrorResponse({'username': ["кого удалять-то?"]}, status=400)
+	try:
+		User.objects.get(username=request.POST['username']).delete()
+		return JSONResponse('', 200)
+	except User.DoesNotExist:
+		return JSONErrorResponse({'username': ["а нет такого юзера"]}, status=400)
+
+
 def register_view(request):
 	if request.method != 'POST':
 		raise Http404

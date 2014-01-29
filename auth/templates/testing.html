@@ -1,0 +1,53 @@
+<h3>API-щупалка starts here</h3>
+<div id="examples_div"></div>
+<span id="prefix"></span><input type="text" placeholder="URL" id="url_div" value="/auth/login/"> ---
+<input type="data" placeholder="Data" id="data_div" style="width:512px;"> ---
+<input type="button" id="send" value="POST"><br>
+<input type="text" placeholder="Result" id="result" style="width:768px;"><br>
+<textarea id="cookie_backet" rows=15 cols=96></textarea>
+<script>
+send.onclick = function() {
+	console.log(data_div.value)
+	console.log(url_div.value)
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", prefix.innerText+url_div.value, false);
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4) return;
+		try {
+			obj = JSON.parse(xhr.responseText);
+			console.log(obj);
+		} catch(e) {
+			console.log(xhr.responseText);
+		}
+		result.value = xhr.responseText=="" ? "<empty>" : xhr.responseText;
+		cookie_backet.value = document.cookie;//.split(";").join("\n")
+	}
+	xhr.send(data_div.value);
+}
+
+var examples = [
+	["/auth/register/?username=someuser&password=u_wont_guess"],
+	["/auth/register/?username=someuser"],
+	["/auth/login/?username=someuser&password=u_wont_guess"],
+	["/auth/login/?username=anon&password=pass"],
+	["/auth/login/?username=someuser&password=wrong"],
+	["/auth/rmf/?username=someuser"]
+];
+for (var i=0; i<examples.length; i++) {
+	var url = examples[i][0];
+	var a = document.createElement("a");
+	a.textContent = url;
+	a.href = "#";
+	a.style.display = "block";
+	a.onclick = onExampleClick;
+	examples_div.appendChild(a);
+}
+function onExampleClick() {
+	var data = this.textContent.split("?");
+	console.log(data)
+	url_div.value = data[0];
+	data_div.value = data[1] || "";
+	return false;
+}
+</script>

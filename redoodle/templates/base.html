@@ -71,29 +71,7 @@
             {% block footer %}{% endblock %}
             </div>
 
-<h3>API-щупалка starts here</h3>
-<span id="prefix"></span><input type="text" placeholder="URL" id="url" value="/auth/login/"> ---
-<input type="data" placeholder="Data" id="data"> ---
-<input type="button" id="send" value="send"><br>
-<input type="text" placeholder="Result" id="result" style="width:768px;"><br>
-<textarea id="cookie_backet" rows=15 cols=96></textarea>
-<script>
-send.onclick = function() {
-	console.log(data.value)
-	console.log(url.value)
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", prefix.innerText+url.value, false);
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState != 4) return;
-		obj = JSON.parse(xhr.responseText);
-		result.value = xhr.responseText;
-		console.log(obj);
-		cookie_backet.value = document.cookie;//.split(";").join("\n")
-	}
-	xhr.send(data.value);
-}
-</script>
+{% include 'testing.html' %}
 
         </div>
 </body>
