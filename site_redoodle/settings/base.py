@@ -24,7 +24,7 @@ STATIC_URL = '/static/'
 SECRET_KEY = 'yy3d&amp;rmb$g$8ucut=9(@g=qi2%*ro552^7$xzddj_wif_0f)sg'
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -33,7 +33,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'site_redoodle.urls'
 
-# Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'site_redoodle.wsgi.application'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -44,7 +43,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.core.context_processors.request',
-    'auth.context_processors.reg_forms'
 )
 
 INSTALLED_APPS = (

@@ -20,13 +20,21 @@ PROJECT_PATH = '/app/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
 # STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
 
+<<<<<<< HEAD
+# STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
+
+=======
 # Static asset configuration
+>>>>>>> try-make-auth-api
 STATIC_ROOT = 'staticfiles'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, 'static'),
 )
+<<<<<<< HEAD
+=======
 
 INSTALLED_APPS += (
     'django_extensions',
 )
+>>>>>>> try-make-auth-api

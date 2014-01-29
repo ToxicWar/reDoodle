@@ -5,3 +5,4 @@ ipython==0.13.2
 coverage==3.6
 rednose==0.4.1
 django-nose==1.2
+django-debug-toolbar==0.10.2

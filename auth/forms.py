@@ -11,9 +11,8 @@ class LoginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget=forms.PasswordInput())
 	
-	def __init__(self, request=None, *args, **kwargs):
-		self.request = request
-		super(LoginForm, self).__init__(*args, **kwargs)
+#	def __init__(self, *args, **kwargs):
+#		super(LoginForm, self).__init__(*args, **kwargs)
 	
 	def clean(self):
 		if self._errors:
@@ -34,12 +33,7 @@ class LoginForm(forms.Form):
 		else:
 			self.user = user
 		
-		self.check_for_test_cookie()
 		return data
-	
-	def check_for_test_cookie(self):
-		if self.request and not self.request.session.test_cookie_worked():
-			raise forms.ValidationError(u'Без кук мы не логиним')
 
 
 class RegistrationForm(forms.Form):
@@ -59,11 +53,12 @@ class RegistrationForm(forms.Form):
 		except User.DoesNotExist:
 			pass
 		
-		try:
-			user = User.objects.get(email=data['email'])
-			self._errors['email'] = ErrorList([u'Почта занята'])
-		except User.DoesNotExist:
-			pass
+		if data['email']:
+			try:
+				user = User.objects.get(email=data['email'])
+				self._errors['email'] = ErrorList([u'Почта занята'])
+			except User.DoesNotExist:
+				pass
 		
 		return data
 	
