@@ -1,17 +1,11 @@
 #coding: utf-8
-from django.template.response import TemplateResponse
-from django.template.loader import render_to_string
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
 from django.conf import settings
-from django.views.generic.edit import FormView
-#from django.forms import ValidationError
-from django.core import validators
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from .forms import LoginForm, RegistrationForm, EmailForm
 from random import randint
 from hashlib import md5
@@ -141,4 +135,3 @@ def mail_confirm_view(request):
 #		except ValidationError:
 #			info[k] = v[1]
 #	return info
-
