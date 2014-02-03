@@ -9,7 +9,4 @@ urlpatterns = patterns('',
     url(r'^register/$', register_view, name='register'),
     url(r'^mail_confirm/$', mail_confirm_view, name='mail_confirm'),
     #url(r'^reg_complete/', reg_complete_view, name='reg_complete'),
-
-    # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
 )

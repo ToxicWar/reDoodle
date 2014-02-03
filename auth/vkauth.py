@@ -16,4 +16,3 @@ response = c.getresponse()
 print response.status, response.reason
 data = response.read()
 print data
-

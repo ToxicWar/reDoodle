@@ -7,7 +7,6 @@ class ChainAdmin(admin.ModelAdmin):
     list_display = ('name', 'likes', 'room')
     search_fields = ('name',)
     list_filter = ('room',)
-    # raw_id_fields = ('room',)
 
 
 admin.site.register(Room)

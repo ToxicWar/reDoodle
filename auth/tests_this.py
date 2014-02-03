@@ -158,6 +158,3 @@ class SimpleTest(TestCase):
 		resp = self.logout()
 		self.assertEqual(resp.status_code, 200)
 		self.assertTrue(SESSION_KEY not in self.client.session)
-
-
-

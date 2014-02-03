@@ -3,17 +3,13 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.util import ErrorList
-from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import authenticate
 
 
 class LoginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget=forms.PasswordInput())
-	
-#	def __init__(self, *args, **kwargs):
-#		super(LoginForm, self).__init__(*args, **kwargs)
-	
+
 	def clean(self):
 		if self._errors:
 			return self.cleaned_data
@@ -73,4 +69,3 @@ class RegistrationForm(forms.Form):
 
 class EmailForm(forms.Form):
 	email = forms.EmailField()
-

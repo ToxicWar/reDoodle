@@ -16,4 +16,3 @@ class LoginBackend(ModelBackend):
 			return None
 		
 		return user
-
