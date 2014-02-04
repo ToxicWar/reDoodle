@@ -2,8 +2,8 @@
 //temp:
 param={};
 var OCcanvas, OCCcontext, Scanvas, SCcontext;
-currRoom = "1";
-roomsDivHeight=0;
+var ROOMSDATA = {}; // id&name
+hightFix = 0;
 
 contentHeight = 515;
 //кашка картинок
@@ -57,13 +57,13 @@ function init(){
 		Sdot(Scanvas)
 	}
 	
-	api_load(currRoom)
+	api_loadRoomsList()
 }
 
 function main(){
 	whois()
 	//document.body.innerHTML = "id " + userID;
-	roomsDivHeight = rooms.offsetHeight;
+
 }
 
 function whois(){
@@ -113,24 +113,26 @@ function api_loadRoomsList(){
 			var html = "";
 			for (i=0; i<income.results.length; i++){
 				html += addRoomIntoList(income.results[i]) //туду: переписать под другую функцию
+				ROOMSDATA[income.results[i].id] = income.results[i];
 			}
 			roomsList.innerHTML = html;
 			loading.setAttribute("class","hidden");
+			api_load(ROOMSDATA[1])
         }
     }   
     xmlhttp.open('GET', "/api/rooms/", true);
     xmlhttp.send(); 
 	
+	hightFix = rooms.offsetHeight;
+	
 	function addRoomIntoList(data){
-		result = "<span class='myRoom' onclick='api_load(" + data.id +")'>"+ data.name + "</span>";
+		result = "<span class='myRoom' onclick='api_load(ROOMSDATA[" + data.id +"])'>"+ data.name + "</span>";
 		return result;
-		
 	}
-
 }
 
 function api_addRoom(){
-	if(popUpForm.value){
+	if(popUpForm.value!=""){
 		loading.setAttribute("class","visible");
 		
 		xmlhttp = new XMLHttpRequest();    
@@ -159,15 +161,20 @@ function addRoomElemToList(roomName, roomId){
 
 function api_load(room){
 	loading.setAttribute("class","visible");
-	
     xmlhttp = new XMLHttpRequest();    
     xmlhttp.onreadystatechange = function()
     {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
         {
-			currRoom = ""+room;
+			document.getElementById("roomName").setAttribute("onclick", "load('" + room.id + "')")
+			document.getElementById("roomName").setAttribute("roomId", room.id)
+			document.getElementById("roomNameText").innerHTML = "Комната " + room.name +":"
+			document.getElementById("roomShare").setAttribute("onclick", "shareRoom('"+ room.id + "')") //TODO vk-format
+			document.getElementById("roomAction").setAttribute("onclick", "newChain()")
+			document.getElementById("canselEditing").setAttribute("onclick", "load('" + room.id + "')")
 			var income = JSON.parse(xmlhttp.responseText);
-			var html = "<div id='newChain' onclick='newChain()'><div style='margin: auto; width: 130px; padding: 11px;'>Создать цепочку</div></div>"; 
+			//var html = "<div id='newChain' onclick='newChain()'><div style='margin: auto; width: 130px; padding: 11px;'>Создать цепочку</div></div>"; 
+			var html = "";
 			for (i=0; i<income.chain_set.length; i++){
 				html += addChain(income.chain_set[i])
 			}
@@ -175,10 +182,9 @@ function api_load(room){
 			loading.setAttribute("class","hidden");
 			content.setAttribute("class", "")
 			scroll(0,0)
-			api_loadRoomsList()
         }
     }   
-    xmlhttp.open('GET', "/api/rooms/" + room, true);
+    xmlhttp.open('GET', "/api/rooms/" + room.id, true);
     xmlhttp.send();  
 
 	function addChain(data){
@@ -186,14 +192,15 @@ function api_load(room){
 		for (j=0; j<data.image_set.length; j++){
 			images += "<img class='chainPic' src='" + data.image_set[j].image + "'></img>";
 		}
+		
 		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
 			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id	
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
-			  +"<div class='continue' onclick='continueChain(" + data.id
-			  +")'><div class='textInNaviBut" /* + TODO data.is_blocked */
+			  +"<div class='continue' onclick='continueChain(" + data.id + ", &#39" + data.name
+			  +"&#39)'><div class='textInNaviBut" /* + TODO data.is_blocked */
 			  +"'>Продолжить</div></div></div></div><div class='chainFooter'></div></div>"
 			   
 	}
@@ -216,24 +223,23 @@ function shareChain(chain){
 function likeChain(chain){
 	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
 }
-function continueChain(chain){
-/*todo*/
-	loading.setAttribute("class","visible");
+function continueChain(chainId, chainName){
+//todo спрятать комнаты
 	
-    xmlhttp = new XMLHttpRequest();    
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
-			//var income = JSON.parse(xmlhttp.responseText);
-			content.innerHTML = xmlhttp.responseText;
-			loading.setAttribute("class","hidden");
-			content.setAttribute("class", "editPage")
-			rooms.setAttribute("class", "visible")
-        }
-    }   
-    xmlhttp.open('GET', "http://91.144.179.84:9000/redoodle_vk/editor.html", true);
-    xmlhttp.send();  
+	rooms.style.display = "none"
+	container.style.height = container.offsetHeight + hightFix + "px"
+	
+	content.setAttribute("class", "editPage")
+	content.innerHTML = editorHTML;
+	
+	roomShare.style.display = "none";
+	roomAction.style.display = "none";
+	
+	editingText.innerHTML = "новая картинка в цепочку " + chainName
+	editing.style.display = "block";
+	canselEditing.style.display = "block";
+	
+	editor.style.paddingTop = (container.offsetHeight - 525)/2 +"px"
 }
 /********* pop up and rooms block hiding *********/
 /*

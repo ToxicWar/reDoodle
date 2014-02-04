@@ -4,6 +4,25 @@
 {% block style_and_script %}
     <script src="{% static 'js/utils.js' %}"></script>
 {% endblock %}
+{% block editors_template %}
+<script>
+var editorHTML = "<div id='editor'><div id='rightCol' class='f_l'><div style='overflow: auto;'>" +
+				"<div id='magicBut' class='f_l editorBut'>Копировать</div>" +
+				"<div id='cancel' class='f_l editorBut'>Отменить</div>" +
+				"<div id='redo' class='f_l editorBut'>Повторить</div></div>" +
+				"<div id='canvas'></div>" +
+				"<div style='overflow: auto;'>" +
+				"<div id='layer1' class='f_l editorBut padToBut'>Первый слой</div>" +
+				"<div id='layer2' class='f_l editorBut padToBut'>Второй слой</div>" +
+				"<div id='layer3' class='f_l editorBut padToBut'>Третий слой</div> </div></div>" +
+				"<div id='leftCol' class='f_l'><div id='palette'></div>" +
+				"<div id='opNSoap'>" +
+				"<canvas id='opnsoapc' width='210px' height='200px'></canvas>" +
+				"</div><div id='size'>" +
+				"<canvas id='Csize' width='210px' height='38px'></canvas>" +
+				"</div><div id='submit'>Отправить</div></div></div>";
+</script>
+{% endblock %}
 
 {% block title %}reDoodle{% endblock %}
 
@@ -39,25 +58,39 @@
 	</div>
 	
 	<div id="naviHead">
-		<div id="roomName" class="headBut f_l" onclick="load('roomlink')">
+		<div id="roomName" class="headBut f_l">
 			<div class="textButFix">
-				<center>
+				<center id="roomNameText">
 					Default:
 				</center>
 			</div>
 			
 		</div>
-		<div id="roomShare" class="headBut headButClickable f_l" onclick="shareRoom('roomlink')">
+		<div id="roomShare" class="headBut headButClickable f_l">
 			<div class="textButFix">
 				<center>
 					Поделиться комнатой
 				</center>
 			</div>
 		</div>
-		<div id="roomAction" class="headBut headButClickable f_l" onclick="newChain('roomlink')">
+		<div id="roomAction" class="headBut headButClickable f_l">
 			<div class="textButFix">
 				<center>
 					Добавить цепочку
+				</center>
+			</div>
+		</div>
+		<div id="editing" class="headBut f_l hidden">
+			<div class="textButFix">
+				<center id="editingText">
+					
+				</center>
+			</div>
+		</div>
+		<div id="canselEditing" class="headBut headButClickable f_l hidden">
+			<div class="textButFix">
+				<center>
+					Отмена
 				</center>
 			</div>
 		</div>

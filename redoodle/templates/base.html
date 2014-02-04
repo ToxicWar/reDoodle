@@ -10,6 +10,9 @@
  <script src="{% static 'js/core.js' %}"></script>
  <script src="http://vk.com/js/api/xd_connection.js?2" type="text/javascript"></script>
  {% block style_and_script %}{% endblock %}
+ 
+ {% block editors_template %}{% endblock %}
+ 
 </head>
 <body onload="init()" id="body">
 
@@ -25,6 +28,55 @@
             {% block content %}{% endblock %}
 		</div>
     </div>
+	
+	<!-- Temorary -->
+	<style> 
+		#debug{
+			position: absolute;
+			top:10px;
+			left:10px;
+			background: white;
+			border: 1px solid #888;
+			width: 10px;
+			height: 10px;
+			overflow: hidden
+		}
+		#debug2{
+			position: absolute;
+			top:10px;
+			background: white;
+			border: 1px solid #888;
+			overflow: visible;
+		}
+		#debugclose{
+			position: absolute;
+			top:10px;
+			left:810px;
+			background: white;
+			border: 1px solid #888;
+			width: 10px;
+			height: 10px;
+			overflow: hidden;
+			display: none;
+		}
+	</style>
+	<script> 
+		function abc(el){
+			el.id="debug2";	
+			debugclose.style.display="block"
+		}
+		function abc2(){
+			debug2.id="debug";
+			debugclose.style.display="none"
+		}
+	</script>
+	<div id="debug" onclick="abc(this)">
+		{% include 'testing.html' %}
+	</div>
+	<div id="debugclose" onclick="abc2()">
+		X
+	</div>
+	<!-- /Temorary -->
 
 </div>
 </body>

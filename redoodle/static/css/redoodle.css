@@ -130,18 +130,21 @@ body{
 	line-height: 1.7;
 	cursor: pointer;
 }
-.myRoom{
-	background: rgb(159, 186, 235);
+
+#roomAction, .myRoom{
+	background: rgb(207, 217, 250);
+	margin-right: 5px;
 }
-.myRoom:hover{
-	background: rgb(136, 156, 221);
+#roomAction:hover, .myRoom:hover{
+	background: rgb(169, 188, 221);
 }
 .newRoom{
-	background:rgb(211, 159, 221);
+	background: rgb(224, 179, 224);
 }
 .newRoom:hover{
-	background: rgb(192, 112, 192);
+	background: rgb(206, 147, 221);
 }
+
 
 #naviHead{
 	overflow: hidden;
@@ -201,7 +204,8 @@ body{
 	background: url("http://wallpapers4ipad.com/hd-textures-ipad-wallpapers/gray-pattern/gray-pattern.png");
 }
 #content{
-	height: 515px;
+	min-height: 515px;
+	height:100%;
 	overflow-y: hidden;
 	
 }
@@ -324,7 +328,7 @@ body{
 }
 #editor{
 	overflow: auto;
-	margin-top: 5px;
+	padding-top:10px;
 }
 /*********** Right ***********/
 #rightCol{
