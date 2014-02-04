@@ -7,16 +7,68 @@
 
 {% block title %}reDoodle{% endblock %}
 
+{% block absoluts %}
+<div id="darkSide" class="hidden" onclick="hidePopUp()"></div>
+<div id="loading" class="hidden"></div>
 
-{% block header %}
-    <div class="logo">
-    </div>
-    <div class="login" id="menubutton">
-        Какой сегодня день, Усик?
-    </div>
+<div id="popUp" class="hidden">
+	<div id="puHead">
+		<div id="puTitle" class="f_l">...</div>
+		<div id="puClose" class="f_r" onclick="hidePopUp()">X</div>
+	</div>
+	<div id="puBody">
+	
+	</div>
+</div>
 {% endblock %}
-{% block menu %}
-    <!-->эх вы кони мои кони<-->
+
+{% block head %}
+	<div id="topHead" onclick="logoClick()">
+		<center style="padding: 7px;">
+			<img id="logoImg"src="http://i.imgur.com/rDhHzM7.png" ></img>
+			— дорисовывай рисунки
+		</center>
+	</div>
+	
+	<div id="rooms">
+		<div style="margin-left: 5px">Мои комнаты:</div>
+		<div style="width:100%; padding-top: 5px; padding-bottom: 5px;" id="roomsList">
+		</div>
+		<span class="newRoom" id="addRoom" onclick="addRoom()">Добавить по ссылке</span>
+		<span class="newRoom" id="createRoom" onclick="createRoom()">Создать</span>
+	</div>
+	
+	<div id="naviHead">
+		<div id="roomName" class="headBut f_l" onclick="load('roomlink')">
+			<div class="textButFix">
+				<center>
+					Default:
+				</center>
+			</div>
+			
+		</div>
+		<div id="roomShare" class="headBut headButClickable f_l" onclick="shareRoom('roomlink')">
+			<div class="textButFix">
+				<center>
+					Поделиться комнатой
+				</center>
+			</div>
+		</div>
+		<div id="roomAction" class="headBut headButClickable f_l" onclick="newChain('roomlink')">
+			<div class="textButFix">
+				<center>
+					Добавить цепочку
+				</center>
+			</div>
+		</div>
+		<div id="archive" class="headBut headButClickable f_r" onclick="load('roomlink/archive')">
+			<div class="textButFix">
+				<center>
+					Перейти в архив
+				</center>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 {% block content %}
     {% for chain in chainsInDefaultRoom %}
@@ -46,34 +98,42 @@
                 Показать столбиком
             </div>
         </div>
+
+	<div class="chain">  
+		<div class="{{ chain.name }}">
+			<div class="name f_l" onclick="shareChain('{% url 'editor' 'default' chain.name %}')">
+				<div class="f_l">
+					{{ chain.name }}
+				</div>
+				<div class="share f_r">
+					
+				</div>				
+
+			</div>
+			<div class="likes f_r" onclick="likeChain('{% url 'editor' 'default' chain.name %}')">
+				<div class="f_l" style="margin-right: 5px">Понравилось:</div>
+				<div class="f_l" style="margin-right: 5px">{{ chain.likes }}</div>
+				<div class="f_l likeHeart nolike" id="chainlinklike"> </div>
+			</div>
+		</div>
+		<div class="chainBody">
+			<div class="columnPic">
+                {% for image in chain.image_set.all %}
+                    <img class="chainPic" src="{{ image.image.url }}"/>
+                {% endfor %}
+
+				<div class="continue" onclick="continueChain('chainlink')">
+					<div class="textInNaviBut">
+						Продолжить
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="chainFooter">
+		</div>
+	</div>
+
     {% endfor %}
     
-    <div class="userinfo">
-        <li class="rooms">
-            <ul>
-                <a href="/default">Общая</a>
-                <!-- а тут могла бы быть ваша нафигация (лол опечатался, так и оставлю) -->
-            </ul>
-            <ul>
-                <div style="padding-top:5px;"> <!-- ну создавать же мне класс с одной строкой кода мне для единственного дива на сайте? -->
-                <!--
-                    <a href="" class="create">Создать</a> 
-                    </br>
-                    <a href="" class="enter">Войти</a>
-                -->
-                    <form action="{% url 'add-room' %}" method="POST">
-                        {% csrf_token %}
-                        <div class="field">
-                            {{ form.room_name.errors }}
-                            <label for="id_room_name">Room name:</label>
-                            {{ form.room_name }}
-                        </div>
-                        <input type="submit" /> 
-                    </form>
-                </div>
-            </ul>
-        </li>
-    </div>
 {% endblock %}
-{% block footer %}
-{% endblock %}
+
