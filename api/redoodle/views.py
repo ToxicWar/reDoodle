@@ -16,8 +16,10 @@ class RoomList(ListCreateAPIView):
         serializer = self.get_serializer(data=request.DATA)
 
         if serializer.is_valid():
-            room, _ = Room.objects.get_or_create(name=serializer.data['name'])
+            room, created = Room.objects.get_or_create(name=serializer.data['name'])
             headers = self.get_success_headers(serializer.data)
+            if not created:
+                return Response('The room is already created', status=status.HTTP_400_BAD_REQUEST, headers=headers)
             return Response(status=status.HTTP_201_CREATED, headers=headers)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
