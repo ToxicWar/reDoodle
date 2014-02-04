@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 
     'redoodle',
     'auth',
+    'kvstore',
 
     'rest_framework',
     'south',
