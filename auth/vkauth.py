@@ -26,7 +26,7 @@ print "Initialising VK module..."
 
 access_token = KV.get('vk_access_token')
 if access_token:
-	print '  ...found saved access_token, done.'
+	print '  ...found saved access_token'
 	if datetime.now() > KV.get('vk_access_token_expire'):
 		print '  ...which has expired'
 		access_token = None
@@ -51,8 +51,9 @@ if not access_token:
 	access_token = data['access_token']
 	KV.put('vk_access_token', access_token)
 	KV.put('vk_access_token_expire', datetime.now() + ACCESS_TOKEN_TIMEOUT)
-	
-	print "  ...success!", data
+	print '  ...data: ', data  # 'expires_in'
+
+print "  ...success!"
 
 
 def proof_ip(request):
