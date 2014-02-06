@@ -3,6 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from api.urls import urlpatterns as api_urlpatterns
 from django.contrib import admin
+import auth.vkauth
 admin.autodiscover()
 
 urlpatterns = patterns('',
