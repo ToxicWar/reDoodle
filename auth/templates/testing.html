@@ -4,7 +4,8 @@
 <input type="data" placeholder="Data" id="data_div" style="width:512px;"> ---
 <input type="button" id="send" value="POST"><br>
 <input type="text" placeholder="Result" id="result" style="width:768px;"><br>
-<textarea id="cookie_backet" rows=15 cols=96></textarea>
+<textarea id="cookie_backet" rows=5 cols=100></textarea><br>
+<textarea id="url_params" rows=18 cols=100></textarea>
 <script>
 send.onclick = function() {
 	console.log(data_div.value)
@@ -50,4 +51,6 @@ function onExampleClick() {
 	data_div.value = data[1] || "";
 	return false;
 }
+
+url_params.textContent = document.location.search.substr(1).split("&").join("\n");
 </script>

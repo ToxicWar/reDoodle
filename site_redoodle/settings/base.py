@@ -65,6 +65,7 @@ INSTALLED_APPS = (
 AUTHENTICATION_BACKENDS = (
     #'django.contrib.auth.backends.ModelBackend',
     'auth.backends.LoginBackend',
+    'auth.backends.VKLoginBackend',
 )
 
 REST_FRAMEWORK = {

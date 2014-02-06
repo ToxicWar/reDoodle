@@ -10,19 +10,7 @@ from .forms import LoginForm, RegistrationForm, EmailForm
 from random import randint
 from hashlib import md5
 import json
-
-
-def JSONResponse(string, status):
-	return HttpResponse(string,
-		content_type="application/json", status=status)
-
-def JSONDumpsResponse(data, status):
-	return HttpResponse(json.dumps(data),
-		content_type="application/json", status=status)
-
-def JSONErrorResponse(errors, status):
-	return HttpResponse('{"errors": '+json.dumps(errors)+'}',
-		content_type="application/json", status=status)
+from .json_response_utils import *
 
 # json.dumps(data)
 def login_view(request):
@@ -34,7 +22,7 @@ def login_view(request):
 		auth_login(request, form.user)
 		return JSONResponse('', 200)
 	
-	return JSONErrorResponse(form._errors, status=400)
+	return JSONErrorResponse(form._errors, 400)
 
 
 def logout(request):
