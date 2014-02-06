@@ -44,9 +44,21 @@ class ChainList(ListCreateAPIView):
         serializer = ChainCreateSerializer(data=request.DATA)
 
         if serializer.is_valid():
-            room, _ = Room.objects.get_or_create(name=serializer.data['room'])
-            chain, _ = room.chain_set.get_or_create(name=serializer.data['name'])
+            # I'm so sorry!
+            try:
+                room_id = int(serializer.data['room'])
+            except ValueError as e:
+                room, _ = Room.objects.get_or_create(name=serializer.data['room'])
+            else:
+                try:
+                    room = Room.objects.get(id=room_id)
+                except Room.DoesNotExist as e:
+                    return Response('Room not found', status=status.HTTP_400_BAD_REQUEST)
+
+            chain, created = room.chain_set.get_or_create(name=serializer.data['name'])
             headers = self.get_success_headers(serializer.data)
+            if not created:
+                return Response('The chain is already created', status=status.HTTP_400_BAD_REQUEST, headers=headers)
             return Response(status=status.HTTP_201_CREATED, headers=headers)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
