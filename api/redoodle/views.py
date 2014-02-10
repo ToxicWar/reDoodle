@@ -1,8 +1,10 @@
 # coding: utf-8
+from django.db.models import F
+from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from redoodle.models import Room, Chain
+from redoodle.models import Room, Chain, Image
 from .serializers import RoomListSerializer, RoomDetailSerializer, ChainListSerializer, ChainDetailSerializer, ChainCreateSerializer
 
 
@@ -71,3 +73,17 @@ class ChainDetail(RetrieveAPIView):
     serializer_class = ChainDetailSerializer
 
 chain_detail = ChainDetail.as_view()
+
+
+class ImageBanView(APIView):
+    def get(self, request, **kwargs):
+        try:
+            image = Image.objects.get(pk=kwargs['pk'])
+        except Image.DoesNotExist as e:
+            return Response('Image matching query does not exist', status=status.HTTP_400_BAD_REQUEST)
+        else:
+            image.ban += 1
+            image.save()
+        return Response('Updated', status=status.HTTP_200_OK)
+
+image_ban_view = ImageBanView.as_view()
