@@ -3,6 +3,18 @@
 {% load static %}
 {% block style_and_script %}
 	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/setup_editor.js' %}"></script>
+	
+	<script src="{% static 'paint/util.js' %}"></script>
+	<script src="{% static 'paint/control_single.js' %}"></script>
+	<script src="{% static 'paint/color_picker_2.0/color_picker.js' %}"></script>
+	<script src="{% static 'paint/paint.js' %}"></script>
+	<script src="{% static 'paint/history.js' %}"></script>
+	<script src="{% static 'paint/tool_brush.js' %}"></script>
+	<script src="{% static 'paint/tool_picker.js' %}"></script>
+	<script src="{% static 'paint/tool_merge.js' %}"></script>
+	<script src="{% static 'paint/tool_image_transformer.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'css/editor.css' %}">
 {% endblock %}
 {% block editors_template %}
 <script>
@@ -104,68 +116,9 @@ var editorHTML = "<div id='editor'><div id='rightCol' class='f_l'><div style='ov
 	</div>
 {% endblock %}
 {% block content %}
-	{% for chain in chainsInDefaultRoom %}
-		<div class="chaincontainer" id="mainchains">
-			<div class="containertop" id="regulargrad">
-				<div class="chainname">
-					<a href="{% url 'editor' 'default' chain.name %}">
-						<p class="name" onmouseover="this.style.textDecoration ='underline'; this.style.color='#0000ff';" onmouseout="this.style.textDecoration='none'; this.style.color='#FBFBFF';">{{ chain.name }}<p>
-					</a>
-				</div>
-				<div class="chainlikes" >
-					<span class="{{ chain.name }}_like_count">
-						<p class="likes">{{ chain.likes }}<p>
-					</span>
-					{% include "includes/auth_like_dislike.html" %}
-				</div>
-			</div>
-			<div class="containerbody scroll-horizontal scroll">
-				<div class="chainline">
-					<!--Тут могли быть ваши картинки-->
-					{% for image in chain.image_set.all %}
-						<img src="{{ image.image.url }}"/>
-					{% endfor %}
-				</div>
-			</div>
-			<div class="chainbottom" id="changeview_1" onMouseOver>
-				Показать столбиком
-			</div>
-		</div>
-
-	<div class="chain">  
-		<div class="{{ chain.name }}">
-			<div class="name f_l" onclick="shareChain('{% url 'editor' 'default' chain.name %}')">
-				<div class="f_l">
-					{{ chain.name }}
-				</div>
-				<div class="share f_r">
-					
-				</div>
-
-			</div>
-			<div class="likes f_r" onclick="likeChain('{% url 'editor' 'default' chain.name %}')">
-				<div class="f_l" style="margin-right: 5px">Понравилось:</div>
-				<div class="f_l" style="margin-right: 5px">{{ chain.likes }}</div>
-				<div class="f_l likeHeart nolike" id="chainlinklike"> </div>
-			</div>
-		</div>
-		<div class="chainBody">
-			<div class="columnPic">
-				{% for image in chain.image_set.all %}
-					<img class="chainPic" src="{{ image.image.url }}"/>
-				{% endfor %}
-
-				<div class="continue" onclick="continueChain('chainlink')">
-					<div class="textInNaviBut">
-						Продолжить
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="chainFooter">
-		</div>
-	</div>
-
-	{% endfor %}
+<div id="chainsWrap"></div>
+<div id="editorWrap" style="display:none">
+	{% include 'editor.html' %}
+</div>
 {% endblock %}
 

@@ -198,10 +198,10 @@ function api_load(room){
 			for (i=0; i<income.chain_set.length; i++){
 				html += addChain(income.chain_set[i])
 			}
-			content.innerHTML = html;
-			loading.setAttribute("class","hidden");
-			content.setAttribute("class", "")
-			scroll(0,0)
+			chainsWrap.innerHTML = html;
+			loading.classList = "hidden";
+			content.classList = "";
+			scroll(0,0);
 		}
 	}
 	xmlhttp.open('GET', "/api/rooms/" + room.id, true);
@@ -242,13 +242,13 @@ function likeChain(chain){
 	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
 }
 function continueChain(chainId, chainName){
-	//todo спрятать комнаты
+	//TODO: спрятать комнаты
+	rooms.style.display = "none"; //а это не комнаты прячет?
+	//container.style.height = container.offsetHeight + hightFix + "px"
+	chainsWrap.style.display = "none";
 	
-	rooms.style.display = "none"
-	container.style.height = container.offsetHeight + hightFix + "px"
-	
-	content.setAttribute("class", "editPage")
-	content.innerHTML = editorHTML;
+	content.classList = "editPage";
+	editorWrap.style.display = null;
 	
 	roomShare.style.display = "none";
 	roomAction.style.display = "none";
@@ -257,7 +257,7 @@ function continueChain(chainId, chainName){
 	editing.style.display = "block";
 	canselEditing.style.display = "block";
 	
-	editor.style.paddingTop = (container.offsetHeight - 525)/2 +"px"
+	initEditor();
 }
 /********* pop up and rooms block hiding *********/
 /*

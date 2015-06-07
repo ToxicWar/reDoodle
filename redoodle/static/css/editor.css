@@ -1,0 +1,108 @@
+/*********** Editor ***********/
+#chainInEditor{
+	padding-left:5px;
+	padding-right:5px;
+	max-width: 48%;
+}
+#editor{
+	overflow: auto;
+	margin-top: 5px;
+}
+/*********** Right ***********/
+#rightCol{
+	overflow: auto;
+	margin-left:30px;
+	width: 690px;
+}
+#canvas{
+	overflow: auto;
+	width: 690px;
+	height: 431px;
+	background: grey;
+}
+.editorBut{
+	height:20px;
+	width: 230px;
+	text-align: center;
+	padding-top: 8px;
+}
+.editorBut:hover{
+	background: rgb(237, 243, 243);
+}
+.editorBut.selected {
+	Background: lightgrey;
+}
+
+/*********** Left ***********/
+#leftCol{
+	padding-top: 28px;
+	overflow: auto;
+	width: 210px;
+	height: 487px;
+}
+.palette-and-picker-wrap{
+	position: relative;
+}
+#palette{
+	background: grey;
+	height: 200px;
+}
+
+/* иконки инструментов */
+.tool{
+	position: absolute;
+	padding: 3px;
+}
+#pickerBut{
+	left: 0px;
+	bottom: 0px;
+}
+#brushBut{
+	right: 0px;
+	bottom: 0px;
+}
+#eraserBut{
+	left: 0px;
+	top: 0px;
+}
+.tool:hover{
+	background: rgb(237, 243, 243);
+}
+.tool.selected{
+	background: lightgray;
+}
+
+.layer{
+	position: relative;
+}
+.layer canvas{
+	height: 24px;
+	left: 2px;
+	top: 2px;
+	position: absolute;
+}
+
+#redoAllBut{
+	float: right;
+	margin-top: -8px;
+	padding: 8px 8px 0 8px;
+	height: 100%;
+	background: red;
+}
+
+#opNBlurSlider{
+	position: relative;
+	width: 100%;
+	height: 200px;
+}
+#sizeSlider{
+	position: relative;
+	width: 100%;
+	height: 38px;
+}
+#submit{
+	background: lightblue;
+	width: auto;
+	/* height: 38px; */
+}
+

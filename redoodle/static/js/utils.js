@@ -1,3 +1,10 @@
+$ = document.querySelector.bind(document);
+$$ = document.querySelectorAll.bind(document);
+Element.prototype.prependChild = function(elem){
+	this.insertBefore(elem, this.firstChild);
+}
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
