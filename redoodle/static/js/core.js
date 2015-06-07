@@ -104,7 +104,7 @@ function createRoom(){
 /********* room loading content *********/
 function api_loadRoomsList(){
 	loading.setAttribute("class","visible");
-	xmlhttp = new XMLHttpRequest();	
+	var xmlhttp = new XMLHttpRequest();	
 	xmlhttp.onreadystatechange = function()
 	{
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
@@ -119,11 +119,11 @@ function api_loadRoomsList(){
 			loading.setAttribute("class","hidden");
 			api_load(ROOMSDATA[1])
 		}
-	}   
+	}
 	xmlhttp.open('GET', "/api/rooms/", true);
 	xmlhttp.send(); 
 	
-	hightFix = rooms.offsetHeight;
+	var hightFix = rooms.offsetHeight;
 	
 	function addRoomIntoList(data){
 		result = "<span class='myRoom' onclick='api_load(ROOMSDATA[" + data.id +"])'>"+ data.name + "</span>";
@@ -135,33 +135,53 @@ function api_addRoom(){
 	if(popUpForm.value!=""){
 		loading.setAttribute("class","visible");
 		
-		xmlhttp = new XMLHttpRequest();	
-
+		var xmlhttp = new XMLHttpRequest();
+		
 		xmlhttp.open('POST', "/api/rooms/", true);
 		xmlhttp.setRequestHeader("Content-Type", "application/json");
-		data = {"name": popUpForm.value};
+		var data = {"name": popUpForm.value};
 		xmlhttp.send(JSON.stringify(data)); 
-		setTimeout('api_loadRoomsList()', 300)
+		setTimeout(api_loadRoomsList(), 300);
 	} else {
-		hidePopUp()
-		param.title="Ошибка"
-		param.content="Вы не ввели название комнаты."
+		hidePopUp();
+		param.title="Ошибка";
+		param.content="Вы не ввели название комнаты.";
+		showPopUp(param)
+	}
+	loading.setAttribute("class","hidden");
+}
+
+function api_addChain(){
+	if(popUpForm.value!=""){
+		loading.setAttribute("class","visible");
+		
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open('POST', "/api/chains/", true);
+		xmlhttp.setRequestHeader("Content-Type", "application/json");
+		var data = {"name": popUpForm.value, "room": currRoom.id};
+		xmlhttp.send(JSON.stringify(data)); 
+		setTimeout(api_loadRoomsList(), 300);
+	} else {
+		hidePopUp();
+		param.title="Ошибка";
+		param.content="Вы не ввели название комнаты.";
 		showPopUp(param)
 	}
 	loading.setAttribute("class","hidden");
 }
 
 function addRoomElemToList(roomName, roomId){
-	parent = document.getElementById("roomsList");
-	roomEl = document.createElement('span');
+	var parent = document.getElementById("roomsList");
+	var roomEl = document.createElement('span');
 	roomEl.className = 'myRoom';
 	roomEl.addEventListener("click", "load("+ roomId + ")");
 	parent.appendChild(roomEl);
 }
 
 function api_load(room){
+	currRoom = room;
 	loading.setAttribute("class","visible");
-	xmlhttp = new XMLHttpRequest();	
+	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function()
 	{
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
@@ -183,9 +203,9 @@ function api_load(room){
 			content.setAttribute("class", "")
 			scroll(0,0)
 		}
-	}   
+	}
 	xmlhttp.open('GET', "/api/rooms/" + room.id, true);
-	xmlhttp.send();  
+	xmlhttp.send();
 
 	function addChain(data){
 		var images = ""
@@ -195,7 +215,7 @@ function api_load(room){
 		
 		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
-			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id	
+			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
@@ -210,21 +230,19 @@ function api_load(room){
 /********* pop up content *********/
 function newChain(){
 	param.title = "Создать новую цепочку";
-	param.content="Введите название цепочки: </br><input autofocus name='roomName' id='popUpForm' style='width: 300px;' class='' type='text' /> </br><button>Создать</button>";
-	param.room = currRoom;
+	param.content="Введите название цепочки: </br><input autofocus name='roomName' id='popUpForm' style='width: 300px;' class='' type='text' /> </br><button onclick='api_addChain()'>Создать</button>";
 	showPopUp(param)
 }
 function shareChain(chain){
 	param.title = "Поделиться цепочкой";
 	param.content="Скопируйте адрес цепочки: <div id='chainLinkInPopUp'>"+ chain +"</div></br>Или поделитесь вконтакте</br><button>Поделиться</button>";
-	param.chain = chain;
-	showPopUp(param)
+	showPopUp(param);
 }
 function likeChain(chain){
 	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
 }
 function continueChain(chainId, chainName){
-//todo спрятать комнаты
+	//todo спрятать комнаты
 	
 	rooms.style.display = "none"
 	container.style.height = container.offsetHeight + hightFix + "px"
@@ -263,8 +281,6 @@ function showPopUp(param){
 	puTitle.innerHTML = param.title;
 	puBody.innerHTML = param.content;
 	popUpForm.focus();
-	param={};
-	
 }
 
 
