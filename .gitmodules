@@ -1,0 +1,3 @@
+[submodule "redoodle/static/paint"]
+	path = redoodle/static/paint
+	url = https://github.com/3bl3gamer/risovach.git

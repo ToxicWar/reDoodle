@@ -67,19 +67,19 @@ function main(){
 }
 
 function whois(){
-    d = document.location.search.substr(1);
-    var p = d.split("&");
-    var V = {}, curr;
-    for (i = 0; i < p.length; i++) {
-        curr = p[i].split('=');
-        V[curr[0]] = curr[1];
-    }
-    //userID = V['viewer_id']; alert(userID)
+	d = document.location.search.substr(1);
+	var p = d.split("&");
+	var V = {}, curr;
+	for (i = 0; i < p.length; i++) {
+		curr = p[i].split('=');
+		V[curr[0]] = curr[1];
+	}
+	//userID = V['viewer_id']; alert(userID)
 	//alert(V['auth_key'])
 	//alert(V['hash'])
-    //VK.api("users.get", { uid: userID }, function (data) {
-    //   alert(data.response[0].last_name + ' ' + data.response[0].first_name);
-    //});
+	//VK.api("users.get", { uid: userID }, function (data) {
+	//   alert(data.response[0].last_name + ' ' + data.response[0].first_name);
+	//});
 }
 
 /********* Head *********/
@@ -104,11 +104,11 @@ function createRoom(){
 /********* room loading content *********/
 function api_loadRoomsList(){
 	loading.setAttribute("class","visible");
-    xmlhttp = new XMLHttpRequest();    
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
+	xmlhttp = new XMLHttpRequest();	
+	xmlhttp.onreadystatechange = function()
+	{
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+		{
 			var income = JSON.parse(xmlhttp.responseText);
 			var html = "";
 			for (i=0; i<income.results.length; i++){
@@ -118,10 +118,10 @@ function api_loadRoomsList(){
 			roomsList.innerHTML = html;
 			loading.setAttribute("class","hidden");
 			api_load(ROOMSDATA[1])
-        }
-    }   
-    xmlhttp.open('GET', "/api/rooms/", true);
-    xmlhttp.send(); 
+		}
+	}   
+	xmlhttp.open('GET', "/api/rooms/", true);
+	xmlhttp.send(); 
 	
 	hightFix = rooms.offsetHeight;
 	
@@ -135,7 +135,7 @@ function api_addRoom(){
 	if(popUpForm.value!=""){
 		loading.setAttribute("class","visible");
 		
-		xmlhttp = new XMLHttpRequest();    
+		xmlhttp = new XMLHttpRequest();	
 
 		xmlhttp.open('POST', "/api/rooms/", true);
 		xmlhttp.setRequestHeader("Content-Type", "application/json");
@@ -155,17 +155,17 @@ function addRoomElemToList(roomName, roomId){
 	parent = document.getElementById("roomsList");
 	roomEl = document.createElement('span');
 	roomEl.className = 'myRoom';
-    roomEl.addEventListener("click", "load("+ roomId + ")");
+	roomEl.addEventListener("click", "load("+ roomId + ")");
 	parent.appendChild(roomEl);
 }
 
 function api_load(room){
 	loading.setAttribute("class","visible");
-    xmlhttp = new XMLHttpRequest();    
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
+	xmlhttp = new XMLHttpRequest();	
+	xmlhttp.onreadystatechange = function()
+	{
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+		{
 			document.getElementById("roomName").setAttribute("onclick", "load('" + room.id + "')")
 			document.getElementById("roomName").setAttribute("roomId", room.id)
 			document.getElementById("roomNameText").innerHTML = "Комната " + room.name +":"
@@ -182,10 +182,10 @@ function api_load(room){
 			loading.setAttribute("class","hidden");
 			content.setAttribute("class", "")
 			scroll(0,0)
-        }
-    }   
-    xmlhttp.open('GET', "/api/rooms/" + room.id, true);
-    xmlhttp.send();  
+		}
+	}   
+	xmlhttp.open('GET', "/api/rooms/" + room.id, true);
+	xmlhttp.send();  
 
 	function addChain(data){
 		var images = ""
@@ -319,14 +319,12 @@ function Sdot(canvas, mousePos){
 	}
 	SCcontext.fill();
 	SCcontext.stroke();
-	
 }
 function getMousePos(canvas, evt) {
-    rect = canvas.getBoundingClientRect();
-    return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-    };
+	rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left,
+		y: evt.clientY - rect.top
+	};
 }
 
- 
