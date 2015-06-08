@@ -100,6 +100,7 @@ function initEditor() {
 	redoAllBut.onclick = function(e){ e.stopPropagation(); paint.redoAll(paint.layer_id) }
 	
 	magicBut.onclick = function(){ merge.drawCurrentLayerOn(0) }
+	submit.onclick = function(){ send_image(canvas) }
 	
 	
 	// Настройка хоткеев

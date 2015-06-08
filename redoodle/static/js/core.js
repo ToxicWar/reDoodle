@@ -210,17 +210,18 @@ function api_load(room){
 	function addChain(data){
 		var images = ""
 		for (j=0; j<data.image_set.length; j++){
-			images += "<img class='chainPic' src='" + data.image_set[j].image + "'></img>";
+			images += "<img class='chainPic' src='" + data.image_set[j].image.replace("http://example.com","") + "'></img>";
 		}
 		
+		console.log(data)
 		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
 			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
-			  +"<div class='continue' onclick='continueChain(" + data.id + ", &#39" + data.name
-			  +"&#39)'><div class='textInNaviBut" /* + TODO data.is_blocked */
+			  +"<div class='continue' onclick='continueChain(" + JSON.stringify(data) // + data.id + ", &#39" + data.name + "&#39"
+			  +")'><div class='textInNaviBut" /* + TODO data.is_blocked */
 			  +"'>Продолжить</div></div></div></div><div class='chainFooter'></div></div>"
 			   
 	}
@@ -241,7 +242,8 @@ function shareChain(chain){
 function likeChain(chain){
 	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
 }
-function continueChain(chainId, chainName){
+function continueChain(chain){
+	currChain = chain
 	//TODO: спрятать комнаты
 	rooms.style.display = "none"; //а это не комнаты прячет?
 	//container.style.height = container.offsetHeight + hightFix + "px"
@@ -253,7 +255,7 @@ function continueChain(chainId, chainName){
 	roomShare.style.display = "none";
 	roomAction.style.display = "none";
 	
-	editingText.innerHTML = "новая картинка в цепочку " + chainName
+	editingText.innerHTML = "новая картинка в цепочку " + chain.name
 	editing.style.display = "block";
 	canselEditing.style.display = "block";
 	

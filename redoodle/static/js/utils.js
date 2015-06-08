@@ -4,6 +4,21 @@ Element.prototype.prependChild = function(elem){
 	this.insertBefore(elem, this.firstChild);
 }
 
+function send_image(canvas) {
+	var base64 = canvas.toDataURL();
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', "/save_image/");
+	var formData = new FormData();
+	formData.append('base64', base64);
+	formData.append('room', currRoom.id);
+	formData.append('chain', currChain.name);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4) return;
+		alert("ok")
+	}
+	xhr.send(formData);
+}
+
 
 function getCookie(name) {
     var cookieValue = null;
@@ -25,7 +40,7 @@ function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-
+/*
 function send_image(canvas, room, chain, url) {
     var base64 = canvas.toDataURL();
     $.ajaxSetup({
@@ -55,7 +70,7 @@ function send_image(canvas, room, chain, url) {
             }
         });
 }
-
+*/
 function like(url, chain, like) {
     like_class = '.'+chain+'_like_count .likes';
     $.ajax({
