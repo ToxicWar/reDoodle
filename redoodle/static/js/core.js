@@ -216,7 +216,7 @@ function api_load(room){
 		console.log(data)
 		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
-			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id
+			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ JSON.stringify(data)
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
@@ -240,7 +240,10 @@ function shareChain(chain){
 	showPopUp(param);
 }
 function likeChain(chain){
-	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
+	var elem = document.getElementById(chain.id+"like")
+	like(chain, elem.classList.contains("nolike"))
+	elem.classList.toggle("yeslike")
+	elem.classList.toggle("nolike")
 }
 function continueChain(chain){
 	currChain = chain
