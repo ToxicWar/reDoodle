@@ -5,6 +5,9 @@ var OCcanvas, OCCcontext, Scanvas, SCcontext;
 var ROOMSDATA = {}; // id&name
 hightFix = 0;
 
+var currRoom = null
+var currChain = null
+
 contentHeight = 515;
 //кашка картинок
 like =  new Image();
@@ -117,7 +120,8 @@ function api_loadRoomsList(){
 			}
 			roomsList.innerHTML = html;
 			loading.setAttribute("class","hidden");
-			api_load(ROOMSDATA[1])
+			console.log(income.results)
+			api_load(currRoom ? currRoom : income.results[0])
 		}
 	}
 	xmlhttp.open('GET', "/api/rooms/", true);
@@ -141,7 +145,10 @@ function api_addRoom(){
 		xmlhttp.setRequestHeader("Content-Type", "application/json");
 		var data = {"name": popUpForm.value};
 		xmlhttp.send(JSON.stringify(data)); 
-		setTimeout(api_loadRoomsList(), 300);
+		xmlhttp.onload = function() {
+			api_loadRoomsList();
+			hidePopUp();
+		}
 	} else {
 		hidePopUp();
 		param.title="Ошибка";
@@ -159,8 +166,11 @@ function api_addChain(){
 		xmlhttp.open('POST', "/api/chains/", true);
 		xmlhttp.setRequestHeader("Content-Type", "application/json");
 		var data = {"name": popUpForm.value, "room": currRoom.id};
-		xmlhttp.send(JSON.stringify(data)); 
-		setTimeout(api_loadRoomsList(), 300);
+		xmlhttp.send(JSON.stringify(data));
+		xmlhttp.onload = function() {
+			api_loadRoomsList();
+			hidePopUp();
+		}
 	} else {
 		hidePopUp();
 		param.title="Ошибка";
