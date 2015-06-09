@@ -6,7 +6,7 @@ function initEditor(prevImage) {
 	
 	// Настройка редактора
 	paint = new Paint(canvas, {
-		wacom_plugin: null,//TODO: wtPlugin, //я забыл, как его подключать...
+		wacom_plugin: wtPlugin, //я забыл, как его подключать...
 		layer_numb: 3, //R U HAPPY NOW?
 		onLayerChange: function(old_id, cur_id) { //TODO: а зачем оно в параметрах?
 			var old = layerButtons[old_id];
