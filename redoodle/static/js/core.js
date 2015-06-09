@@ -250,6 +250,7 @@ function continueChain(chain){
 	chainsWrap.style.display = "none";
 	
 	content.classList = "editPage";
+	container.style.background = "white";
 	editorWrap.style.display = null;
 	
 	roomShare.style.display = "none";
