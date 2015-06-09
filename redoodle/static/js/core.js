@@ -224,14 +224,14 @@ function api_load(room){
 		}
 		
 		console.log(data)
-		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
+		return "<div class='chain' id='chain_"+data.id+"'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
 			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ JSON.stringify(data)
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
 			  +"<div class='continue' onclick='continueChain(" + JSON.stringify(data) // + data.id + ", &#39" + data.name + "&#39"
-			  +")'><div class='textInNaviBut" /* + TODO data.is_blocked */
+			  +", chain_"+data.id+")'><div class='textInNaviBut" /* + TODO data.is_blocked */
 			  +"'>Продолжить</div></div></div></div><div class='chainFooter'></div></div>"
 			   
 	}
@@ -255,7 +255,7 @@ function likeChain(chain){
 	elem.classList.toggle("yeslike")
 	elem.classList.toggle("nolike")
 }
-function continueChain(chain){
+function continueChain(chain, chainWrap){
 	currChain = chain
 	//TODO: спрятать комнаты
 	rooms.style.display = "none"; //а это не комнаты прячет?
@@ -273,7 +273,9 @@ function continueChain(chain){
 	editing.style.display = "block";
 	canselEditing.style.display = "block";
 	
-	initEditor();
+	var pics = chainWrap.$$('.chainPic')
+	console.log(pics)
+	initEditor(pics[pics.length-1]);
 }
 /********* pop up and rooms block hiding *********/
 /*

@@ -1,7 +1,7 @@
 var paint = null;
 var brush = null;
 
-function initEditor() {
+function initEditor(prevImage) {
 	var layerButtons = document.querySelector('.layers').children;
 	
 	// Настройка редактора
@@ -38,15 +38,18 @@ function initEditor() {
 	paint.toolAdd("picker", picker);
 	picker.onColorPick = function(){ var c=this.RGB3f; cp.setRGB(c[0], c[1], c[2], false) }
 	
-	merge = new Merge(paint);
+	var merge = new Merge(paint);
 	paint.toolSet("brush");
 	
-	/*var img_transf = new ImageTransformer(paint);
-	img_transf.setImage(img_for_paint_first_layer);
-	paint.toolAdd("image-transform", img_transf);
-	paint.toolSet("image-transform");
-	//убирает первый шаг истории, в данном случае - появление трансформера, т.е. делает его неубираемым
-	paint.history.shift();*/
+	if (prevImage) {
+		console.log("prev image:", prevImage)
+		var img_transf = new ImageTransformer(paint);
+		img_transf.setImage(prevImage);
+		paint.toolAdd("image-transform", img_transf);
+		paint.toolSet("image-transform");
+		//убирает первый шаг истории, в данном случае - появление трансформера, т.е. делает его неубираемым
+		paint.history.shift();
+	}
 	
 	
 	// Настройка цветовыбиралки
