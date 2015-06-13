@@ -5,6 +5,9 @@ var OCcanvas, OCCcontext, Scanvas, SCcontext;
 var ROOMSDATA = {}; // id&name
 hightFix = 0;
 
+var currRoom = null
+var currChain = null
+
 contentHeight = 515;
 //кашка картинок
 like =  new Image();
@@ -67,19 +70,19 @@ function main(){
 }
 
 function whois(){
-    d = document.location.search.substr(1);
-    var p = d.split("&");
-    var V = {}, curr;
-    for (i = 0; i < p.length; i++) {
-        curr = p[i].split('=');
-        V[curr[0]] = curr[1];
-    }
-    //userID = V['viewer_id']; alert(userID)
+	d = document.location.search.substr(1);
+	var p = d.split("&");
+	var V = {}, curr;
+	for (i = 0; i < p.length; i++) {
+		curr = p[i].split('=');
+		V[curr[0]] = curr[1];
+	}
+	//userID = V['viewer_id']; alert(userID)
 	//alert(V['auth_key'])
 	//alert(V['hash'])
-    //VK.api("users.get", { uid: userID }, function (data) {
-    //   alert(data.response[0].last_name + ' ' + data.response[0].first_name);
-    //});
+	//VK.api("users.get", { uid: userID }, function (data) {
+	//   alert(data.response[0].last_name + ' ' + data.response[0].first_name);
+	//});
 }
 
 /********* Head *********/
@@ -104,11 +107,11 @@ function createRoom(){
 /********* room loading content *********/
 function api_loadRoomsList(){
 	loading.setAttribute("class","visible");
-    xmlhttp = new XMLHttpRequest();    
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
+	var xmlhttp = new XMLHttpRequest();	
+	xmlhttp.onreadystatechange = function()
+	{
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+		{
 			var income = JSON.parse(xmlhttp.responseText);
 			var html = "";
 			for (i=0; i<income.results.length; i++){
@@ -117,13 +120,14 @@ function api_loadRoomsList(){
 			}
 			roomsList.innerHTML = html;
 			loading.setAttribute("class","hidden");
-			api_load(ROOMSDATA[1])
-        }
-    }   
-    xmlhttp.open('GET', "/api/rooms/", true);
-    xmlhttp.send(); 
+			console.log(income.results)
+			api_load(currRoom ? currRoom : income.results[0])
+		}
+	}
+	xmlhttp.open('GET', "/api/rooms/", true);
+	xmlhttp.send(); 
 	
-	hightFix = rooms.offsetHeight;
+	var hightFix = rooms.offsetHeight;
 	
 	function addRoomIntoList(data){
 		result = "<span class='myRoom' onclick='api_load(ROOMSDATA[" + data.id +"])'>"+ data.name + "</span>";
@@ -135,37 +139,63 @@ function api_addRoom(){
 	if(popUpForm.value!=""){
 		loading.setAttribute("class","visible");
 		
-		xmlhttp = new XMLHttpRequest();    
-
+		var xmlhttp = new XMLHttpRequest();
+		
 		xmlhttp.open('POST', "/api/rooms/", true);
 		xmlhttp.setRequestHeader("Content-Type", "application/json");
-		data = {"name": popUpForm.value};
+		var data = {"name": popUpForm.value};
 		xmlhttp.send(JSON.stringify(data)); 
-		setTimeout('api_loadRoomsList()', 300)
+		xmlhttp.onload = function() {
+			api_loadRoomsList();
+			hidePopUp();
+		}
 	} else {
-		hidePopUp()
-		param.title="Ошибка"
-		param.content="Вы не ввели название комнаты."
+		hidePopUp();
+		param.title="Ошибка";
+		param.content="Вы не ввели название комнаты.";
+		showPopUp(param)
+	}
+	loading.setAttribute("class","hidden");
+}
+
+function api_addChain(){
+	if(popUpForm.value!=""){
+		loading.setAttribute("class","visible");
+		
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open('POST', "/api/chains/", true);
+		xmlhttp.setRequestHeader("Content-Type", "application/json");
+		var data = {"name": popUpForm.value, "room": currRoom.id};
+		xmlhttp.send(JSON.stringify(data));
+		xmlhttp.onload = function() {
+			api_loadRoomsList();
+			hidePopUp();
+		}
+	} else {
+		hidePopUp();
+		param.title="Ошибка";
+		param.content="Вы не ввели название комнаты.";
 		showPopUp(param)
 	}
 	loading.setAttribute("class","hidden");
 }
 
 function addRoomElemToList(roomName, roomId){
-	parent = document.getElementById("roomsList");
-	roomEl = document.createElement('span');
+	var parent = document.getElementById("roomsList");
+	var roomEl = document.createElement('span');
 	roomEl.className = 'myRoom';
-    roomEl.addEventListener("click", "load("+ roomId + ")");
+	roomEl.addEventListener("click", "load("+ roomId + ")");
 	parent.appendChild(roomEl);
 }
 
 function api_load(room){
+	currRoom = room;
 	loading.setAttribute("class","visible");
-    xmlhttp = new XMLHttpRequest();    
-    xmlhttp.onreadystatechange = function()
-    {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-        {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function()
+	{
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+		{
 			document.getElementById("roomName").setAttribute("onclick", "load('" + room.id + "')")
 			document.getElementById("roomName").setAttribute("roomId", room.id)
 			document.getElementById("roomNameText").innerHTML = "Комната " + room.name +":"
@@ -178,29 +208,30 @@ function api_load(room){
 			for (i=0; i<income.chain_set.length; i++){
 				html += addChain(income.chain_set[i])
 			}
-			content.innerHTML = html;
-			loading.setAttribute("class","hidden");
-			content.setAttribute("class", "")
-			scroll(0,0)
-        }
-    }   
-    xmlhttp.open('GET', "/api/rooms/" + room.id, true);
-    xmlhttp.send();  
+			chainsWrap.innerHTML = html;
+			loading.classList = "hidden";
+			content.classList = "";
+			scroll(0,0);
+		}
+	}
+	xmlhttp.open('GET', "/api/rooms/" + room.id, true);
+	xmlhttp.send();
 
 	function addChain(data){
 		var images = ""
 		for (j=0; j<data.image_set.length; j++){
-			images += "<img class='chainPic' src='" + data.image_set[j].image + "'></img>";
+			images += "<img class='chainPic' src='" + data.image_set[j].image.replace("http://example.com","") + "'></img>";
 		}
 		
-		return "<div class='chain'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
+		console.log(data)
+		return "<div class='chain' id='chain_"+data.id+"'><div class='chainName'><div class='name f_l' onclick='shareChain(" +data.id
 			  +")'><div class='f_l'>" + data.name
-			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ data.id	
+			  +"</div><div class='share f_r'></div></div><div class='likes f_r' onclick='likeChain("+ JSON.stringify(data)
 			  +")'><div class='f_l' style='margin-right: 5px'>Понравилось:</div><div class='f_l' style='margin-right: 5px'>" + data.likes
 			  +"</div><div class='f_l likeHeart nolike' id='" + data.id
 			  +"like'> </div></div></div><div class='chainBody'><div class='columnPic'>" + images
-			  +"<div class='continue' onclick='continueChain(" + data.id + ", &#39" + data.name
-			  +"&#39)'><div class='textInNaviBut" /* + TODO data.is_blocked */
+			  +"<div class='continue' onclick='continueChain(" + JSON.stringify(data) // + data.id + ", &#39" + data.name + "&#39"
+			  +", chain_"+data.id+")'><div class='textInNaviBut" /* + TODO data.is_blocked */
 			  +"'>Продолжить</div></div></div></div><div class='chainFooter'></div></div>"
 			   
 	}
@@ -210,36 +241,41 @@ function api_load(room){
 /********* pop up content *********/
 function newChain(){
 	param.title = "Создать новую цепочку";
-	param.content="Введите название цепочки: </br><input autofocus name='roomName' id='popUpForm' style='width: 300px;' class='' type='text' /> </br><button>Создать</button>";
-	param.room = currRoom;
+	param.content="Введите название цепочки: </br><input autofocus name='roomName' id='popUpForm' style='width: 300px;' class='' type='text' /> </br><button onclick='api_addChain()'>Создать</button>";
 	showPopUp(param)
 }
 function shareChain(chain){
 	param.title = "Поделиться цепочкой";
 	param.content="Скопируйте адрес цепочки: <div id='chainLinkInPopUp'>"+ chain +"</div></br>Или поделитесь вконтакте</br><button>Поделиться</button>";
-	param.chain = chain;
-	showPopUp(param)
+	showPopUp(param);
 }
 function likeChain(chain){
-	document.getElementById(chain+"like").setAttribute("class","f_l likeHeart yeslike")
+	var elem = document.getElementById(chain.id+"like")
+	like(chain, elem.classList.contains("nolike"))
+	elem.classList.toggle("yeslike")
+	elem.classList.toggle("nolike")
 }
-function continueChain(chainId, chainName){
-//todo спрятать комнаты
+function continueChain(chain, chainWrap){
+	currChain = chain
+	//TODO: спрятать комнаты
+	rooms.style.display = "none"; //а это не комнаты прячет?
+	//container.style.height = container.offsetHeight + hightFix + "px"
+	chainsWrap.style.display = "none";
 	
-	rooms.style.display = "none"
-	container.style.height = container.offsetHeight + hightFix + "px"
-	
-	content.setAttribute("class", "editPage")
-	content.innerHTML = editorHTML;
+	content.classList = "editPage";
+	container.style.background = "white";
+	editorWrap.style.display = null;
 	
 	roomShare.style.display = "none";
 	roomAction.style.display = "none";
 	
-	editingText.innerHTML = "новая картинка в цепочку " + chainName
+	editingText.innerHTML = "новая картинка в цепочку " + chain.name
 	editing.style.display = "block";
 	canselEditing.style.display = "block";
 	
-	editor.style.paddingTop = (container.offsetHeight - 525)/2 +"px"
+	var pics = chainWrap.$$('.chainPic')
+	console.log(pics)
+	initEditor(pics[pics.length-1]);
 }
 /********* pop up and rooms block hiding *********/
 /*
@@ -263,8 +299,6 @@ function showPopUp(param){
 	puTitle.innerHTML = param.title;
 	puBody.innerHTML = param.content;
 	popUpForm.focus();
-	param={};
-	
 }
 
 
@@ -319,14 +353,12 @@ function Sdot(canvas, mousePos){
 	}
 	SCcontext.fill();
 	SCcontext.stroke();
-	
 }
 function getMousePos(canvas, evt) {
-    rect = canvas.getBoundingClientRect();
-    return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-    };
+	rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left,
+		y: evt.clientY - rect.top
+	};
 }
 
- 

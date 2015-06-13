@@ -97,24 +97,25 @@ save_image = SaveImageView.as_view()
 def like(request):
     if not request.user.is_authenticated():
         return HttpResponse(status=403)
-    if request.is_ajax():
-        if request.method == 'GET':
-            chain_name = request.GET.get('chain', None)
-            like = request.GET.get('like', None)
-            if chain_name is None or like is None:
-                return HttpResponse(status=403)
-            try:
-                chain = Chain.objects.get(name=chain_name)
-            except Chain.DoesNotExist as e:
-                return HttpResponse(e.message, status=400)
-            user = request.user
-            if like == '1':
-                chain.like(user)
-            else:
-                chain.dislike(user)
-            message = chain.likes
-        else:
+    #if request.is_ajax():
+    if request.method == 'POST':
+        chain_name = request.POST.get('chain', None)
+        like = request.POST.get('like', None)
+        if chain_name is None or like is None:
             return HttpResponse(status=403)
+        try:
+            chain = Chain.objects.get(name=chain_name)
+        except Chain.DoesNotExist as e:
+            return HttpResponse(e.message, status=400)
+        user = request.user
+        print like
+        if like == '1':
+            chain.like(user)
+        else:
+            chain.dislike(user)
+        message = chain.likes
     else:
         return HttpResponse(status=403)
+    #else:
+    #    return HttpResponse(status=403)
     return HttpResponse(message)
